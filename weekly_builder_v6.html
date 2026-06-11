@@ -1,0 +1,388 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+body{font-family:var(--font-sans)}
+.page{background:var(--color-background-tertiary);padding:2.5rem 1rem 4rem}
+.container{max-width:720px;margin:0 auto}
+.page-title{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:2rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-secondary);margin-bottom:1rem}
+.dist-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.dt{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:transparent;color:var(--color-text-secondary);transition:all .12s}
+.dt:hover{background:var(--color-background-secondary)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.sfield{display:flex;flex-direction:column;gap:6px}
+.sfield label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary)}
+.pace-wrap{display:flex;align-items:center;gap:4px}
+.pace-wrap input{width:48px;font-size:16px;font-weight:500;text-align:center;padding:7px 4px}
+.psep{font-size:16px;color:var(--color-text-secondary)}
+input[type="date"]{width:100%;font-size:14px;font-weight:500;padding:8px 10px}
+.rec-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;display:none}
+.rec-header{display:flex;align-items:baseline;gap:10px;margin-bottom:1.25rem}
+.rec-dist{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.rec-time{font-size:13px;color:var(--color-text-secondary)}
+.rec-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.rs{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.rs-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.rs-val{font-size:18px;font-weight:500}
+.rs-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.rec-sessions-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-secondary);margin-bottom:8px}
+.rec-sessions{display:flex;flex-direction:column;gap:5px}
+.sess-rec{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--border-radius-md);background:var(--color-background-secondary)}
+.sess-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sess-name{font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1}
+.sess-detail{font-size:12px;color:var(--color-text-secondary)}
+.sess-freq{font-size:12px;color:var(--color-text-secondary);white-space:nowrap}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1.5rem 0}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 6px;display:flex;flex-direction:column;gap:6px;background:var(--color-background-primary)}
+.dc-name{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;text-align:center}
+.dc-type-btn{width:100%;padding:6px 3px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;cursor:pointer;font-size:11px;color:var(--color-text-secondary);text-align:center;transition:all .12s}
+.dc-type-btn:hover{background:var(--color-background-secondary)}
+.dc-type-btn.active-run{background:#FAECE7;border-color:#D85A30;color:#712B13;font-weight:500}
+.dc-type-btn.active-bike{background:#E6F1FB;border-color:#378ADD;color:#0C447C;font-weight:500}
+.dc-type-btn.active-rest{background:var(--color-background-secondary);border-color:var(--color-border-secondary);color:var(--color-text-tertiary)}
+.sess-select{width:100%;font-size:11px;padding:4px 5px;border-radius:var(--border-radius-md)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-val{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.stat-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.plan-rows{display:flex;flex-direction:column;gap:8px}
+.plan-card{border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);overflow:hidden}
+.plan-card.run-card{border-left:3px solid #D85A30}
+.plan-card.bike-card{border-left:3px solid #378ADD}
+.plan-card.rest-card{background:var(--color-background-secondary);border-style:dashed;border-left:none}
+.pc-head{display:grid;grid-template-columns:96px 1fr auto;align-items:start;gap:14px;padding:13px 16px}
+.pc-day{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;padding-top:1px}
+.pc-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.pc-sub{font-size:12px;color:var(--color-text-secondary);margin-top:3px;line-height:1.5}
+.pc-right{text-align:right;min-width:90px}
+.pc-km{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.steps{display:flex;flex-direction:column;border-top:0.5px solid var(--color-border-tertiary);margin:0 16px 13px}
+.step{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.step:last-child{border-bottom:none}
+.step-label{font-size:12px;color:var(--color-text-secondary)}
+.step.key .step-label{color:var(--color-text-primary);font-weight:500}
+.step-pace{font-size:12px;font-weight:500;text-align:right;white-space:nowrap;min-width:110px}
+.pace-pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:500}
+.warn{font-size:12px;color:var(--color-text-warning);padding:8px 12px;background:var(--color-background-warning);border-radius:var(--border-radius-md);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.finish-note{font-size:12px;color:var(--color-text-secondary);line-height:1.6;padding:12px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-top:4px}
+.finish-note strong{color:var(--color-text-primary);font-weight:500}
+
+.print-btn-row{display:flex;justify-content:flex-end;margin-top:1.5rem}
+.print-btn{display:flex;align-items:center;gap:8px;padding:9px 20px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;font-size:13px;font-weight:500;color:var(--color-text-primary);transition:all .12s}
+.print-btn:hover{background:var(--color-background-secondary)}
+
+@media print {
+  .no-print{display:none!important}
+  .page{background:#fff!important;padding:0!important}
+  .container{max-width:100%!important;padding:16px 24px!important}
+  .card{border:1px solid #ddd!important;border-radius:6px!important;page-break-inside:avoid}
+  .rec-box{border:1px solid #ddd!important;border-radius:6px!important}
+  .plan-card{border:1px solid #ddd!important;border-radius:6px!important;page-break-inside:avoid;margin-bottom:6px!important}
+  .plan-card.run-card{border-left:3px solid #D85A30!important}
+  .plan-card.bike-card{border-left:3px solid #378ADD!important}
+  .plan-card.rest-card{background:#f9f9f9!important;border:1px dashed #ccc!important}
+  .rs{background:#f5f5f5!important;border-radius:4px!important}
+  .stat{background:#f5f5f5!important;border-radius:4px!important}
+  .sess-rec{background:#f5f5f5!important;border-radius:4px!important}
+  .steps{margin:0 12px 10px!important}
+  .pace-pill{border:1px solid #ddd!important}
+  .print-btn-row{display:none!important}
+  .week-grid{display:none!important}
+  .no-print{display:none!important}
+  .page-sub{display:none!important}
+  body{font-family:Arial,sans-serif!important;font-size:11px!important}
+  .pc-title{font-size:13px!important}
+  .stat-val{font-size:16px!important}
+  .rs-val{font-size:16px!important}
+  @page{margin:1.5cm;size:A4}
+}
+</style>
+
+<div class="page">
+<div class="container">
+<h2 class="sr-only">Ugeplanlægger med PDF-export</h2>
+<div class="page-title">Ugeplanlægger</div>
+<div class="page-sub">Byg din uge tilpasset dit mål og din form</div>
+
+<div class="card no-print">
+  <div class="card-title">Måldistance</div>
+  <div class="dist-tabs" id="distTabs">
+    <button class="dt" data-d="5k"  onclick="setDist(this)">5 km</button>
+    <button class="dt" data-d="10k" onclick="setDist(this)">10 km</button>
+    <button class="dt on" data-d="hm" onclick="setDist(this)">Halvmarathon</button>
+    <button class="dt" data-d="m"   onclick="setDist(this)">Marathon</button>
+  </div>
+</div>
+
+<div class="card no-print two-col">
+  <div class="sfield">
+    <label>Goalpace</label>
+    <div class="pace-wrap">
+      <input type="number" id="pMin" min="2" max="10" value="5" aria-label="Min">
+      <span class="psep">:</span>
+      <input type="number" id="pSec" min="0" max="59" value="30" aria-label="Sek">
+      <span style="font-size:12px;color:var(--color-text-secondary);margin-left:6px">min/km</span>
+    </div>
+  </div>
+  <div class="sfield">
+    <label>Racedag</label>
+    <input type="date" id="raceDate">
+  </div>
+</div>
+
+<div class="rec-box" id="recBox">
+  <div class="rec-header">
+    <span class="rec-dist" id="recDist"></span>
+    <span class="rec-time" id="recTime"></span>
+  </div>
+  <div class="rec-stats" id="recStats"></div>
+  <div class="rec-sessions-title">Anbefalet fordeling af træningspas</div>
+  <div class="rec-sessions" id="recSessions"></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="card no-print">
+  <div class="card-title">Ugens dage — klik for at skifte type, vælg session ved løb</div>
+  <div class="week-grid" id="weekGrid"></div>
+</div>
+
+<div style="margin-top:1.5rem">
+  <div class="card-title" style="margin-bottom:1rem" id="planHeading">Din uge</div>
+  <div class="stat-row" id="statRow"></div>
+  <div id="warnBox" class="no-print"></div>
+  <div class="plan-rows" id="planRows"></div>
+  <div class="finish-note" id="finishNote"></div>
+</div>
+
+<div class="print-btn-row no-print">
+  <button class="print-btn" onclick="doPrint()">
+    <i class="ti ti-printer" aria-hidden="true" style="font-size:16px"></i>
+    Udskriv / gem som PDF
+  </button>
+</div>
+
+</div>
+</div>
+
+<script>
+const DAYS_SHORT=['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
+const DAYS_FULL=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'];
+const DISTS={
+  '5k': {label:'5 km',        km:5,       color:'#534AB7',cf:0.92},
+  '10k':{label:'10 km',       km:10,      color:'#1D9E75',cf:0.95},
+  'hm': {label:'Halvmarathon',km:21.0975, color:'#E85D26',cf:1.00},
+  'm':  {label:'Marathon',    km:42.195,  color:'#185FA5',cf:1.08},
+};
+const SESSION_TYPES=[
+  {id:'easy',    label:'Rolig løbetur'},
+  {id:'long',    label:'Langtur'},
+  {id:'tempo',   label:'Tempoløb'},
+  {id:'int',     label:'Intervalløb'},
+  {id:'vo2',     label:'VO2max-drag'},
+  {id:'race',    label:'Race-pace-løb'},
+  {id:'rest_run',label:'Restitutionsløb'},
+];
+const REC_SESSIONS={
+  '5k':[
+    {name:'Langtur',detail:'8–12 km, zone 2',freq:'1× om ugen',color:'#1D9E75'},
+    {name:'Intervalløb',detail:'6–8× 400 m, VO2max-pace',freq:'1× om ugen',color:'#D85A30'},
+    {name:'Tempoløb',detail:'20–25 min i tempopace',freq:'1× om ugen',color:'#BA7517'},
+    {name:'Rolig løbetur',detail:'Zone 2, 6–8 km',freq:'1–2× om ugen',color:'#888780'},
+  ],
+  '10k':[
+    {name:'Langtur',detail:'12–16 km, zone 2',freq:'1× om ugen',color:'#1D9E75'},
+    {name:'Intervalløb',detail:'5–6× 1 km, intervalpace',freq:'1× om ugen',color:'#D85A30'},
+    {name:'Tempoløb',detail:'25–30 min i tempopace',freq:'1× om ugen',color:'#BA7517'},
+    {name:'Rolig løbetur',detail:'Zone 2, 8–10 km',freq:'1–2× om ugen',color:'#888780'},
+  ],
+  'hm':[
+    {name:'Langtur',detail:'16–22 km, zone 2',freq:'1× om ugen',color:'#1D9E75'},
+    {name:'Race-pace-løb',detail:'6–10 km i goalpace',freq:'1× om ugen',color:'#E85D26'},
+    {name:'Tempoløb',detail:'30 min i tempopace',freq:'1× om ugen',color:'#BA7517'},
+    {name:'Rolig løbetur',detail:'Zone 2, 8–12 km',freq:'1–2× om ugen',color:'#888780'},
+  ],
+  'm':[
+    {name:'Langtur',detail:'24–35 km, zone 2',freq:'1× om ugen',color:'#1D9E75'},
+    {name:'Maratonpace-løb',detail:'12–18 km i goalpace',freq:'1× om ugen',color:'#185FA5'},
+    {name:'Tempoløb',detail:'35–40 min i tempopace',freq:'1× om ugen',color:'#BA7517'},
+    {name:'Rolig løbetur',detail:'Zone 2, 10–14 km',freq:'2× om ugen',color:'#888780'},
+  ],
+};
+const DIST_REQS={
+  '5k': (p)=>({sessions:p<240?4:3,peakKm:p<240?50:p<270?42:35,duration:p<240?'45–60 min':'30–50 min'}),
+  '10k':(p)=>({sessions:p<270?4:4,peakKm:p<270?60:p<315?50:42,duration:p<270?'50–70 min':'40–60 min'}),
+  'hm': (p)=>({sessions:p<300?5:4,peakKm:p<300?75:p<360?62:55,duration:p<300?'60–90 min':'50–75 min'}),
+  'm':  (p)=>({sessions:p<330?5:5,peakKm:p<330?90:p<390?75:65,duration:p<330?'60–120 min':'55–100 min'}),
+};
+
+let curDist='hm';
+let dayTypes=['rest','run','rest','run','rest','run','rest'];
+let daySessions=['','tempo','','long','','race',''];
+
+function pad(n){return String(Math.round(n)).padStart(2,'0')}
+function s2p(s){const m=Math.floor(s/60),sc=Math.round(s%60);return m+':'+pad(sc)}
+function fmtHMS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=Math.round(s%60);return(h?h+'t ':'')+pad(m)+':'+pad(sc)}
+function weeksOut(){
+  const v=document.getElementById('raceDate').value;
+  if(!v)return 15;
+  return Math.max(1,Math.round((new Date(v)-new Date())/(1000*60*60*24*7)));
+}
+function getRefs(){
+  const mins=parseInt(document.getElementById('pMin').value)||5;
+  const secs=Math.max(0,Math.min(59,parseInt(document.getElementById('pSec').value)||0));
+  const raw=mins*60+secs;
+  return{raw,hmRef:raw/DISTS[curDist].cf};
+}
+function setDist(btn){
+  document.querySelectorAll('.dt').forEach(b=>{b.classList.remove('on');b.style.background='';b.style.borderColor='';b.style.color=''});
+  btn.classList.add('on');curDist=btn.dataset.d;
+  const c=DISTS[curDist].color;
+  btn.style.background=c;btn.style.borderColor='transparent';btn.style.color='#fff';
+  renderGrid();render();
+}
+function cycleType(i){
+  const order=['rest','run','bike'];
+  dayTypes[i]=order[(order.indexOf(dayTypes[i])+1)%order.length];
+  if(dayTypes[i]==='run'&&!daySessions[i])daySessions[i]=autoSession(i);
+  if(dayTypes[i]!=='run')daySessions[i]='';
+  renderGrid();render();
+}
+function autoSession(i){
+  const run=dayTypes.map((t,j)=>t==='run'?j:-1).filter(j=>j>=0).sort((a,b)=>a-b);
+  const pos=run.indexOf(i),n=run.length;
+  if(pos===n-1)return'long';
+  if(n<=2)return pos===0?'tempo':'long';
+  return pos===0?'tempo':'easy';
+}
+function renderGrid(){
+  document.getElementById('weekGrid').innerHTML=DAYS_SHORT.map((d,i)=>{
+    const t=dayTypes[i];
+    const labels={rest:'Hvile',run:'Løb',bike:'Cykling'};
+    const cls={rest:'active-rest',run:'active-run',bike:'active-bike'}[t];
+    let sel='';
+    if(t==='run'){
+      sel=`<select class="sess-select" onchange="daySessions[${i}]=this.value;render()">${SESSION_TYPES.map(s=>`<option value="${s.id}"${daySessions[i]===s.id?' selected':''}>${s.label}</option>`).join('')}</select>`;
+    }
+    return `<div class="day-card"><div class="dc-name">${d}</div><button class="dc-type-btn ${cls}" onclick="cycleType(${i})">${labels[t]}</button>${sel}</div>`;
+  }).join('');
+}
+function paceRange(lo,hi,color,isKey){
+  const bg=isKey?color+'22':'transparent';
+  const tc=isKey?color:'var(--color-text-primary)';
+  return `<span class="pace-pill" style="background:${bg};color:${tc};border:1px solid ${isKey?color+'44':'var(--color-border-tertiary)'}">${s2p(lo)} – ${s2p(hi)}</span>`;
+}
+function buildSession(sessId,hmRef,weekKm,phase){
+  const r=(a,b)=>({lo:Math.round(hmRef*a),hi:Math.round(hmRef*b)});
+  const easyR=r(1.18,1.32),longR=r(1.15,1.30),tempoR=r(0.92,0.99);
+  const intR=r(0.86,0.94),vo2R=r(0.79,0.88),raceR=r(0.97,1.04);
+  const restR=r(1.30,1.45),warmR=r(1.22,1.32),coolR=r(1.25,1.35);
+  const rep={base:'5',build:'6',peak:'4'}[phase];
+  const tmin={base:'20',build:'30',peak:'20'}[phase];
+  const rbk={base:'5',build:'8',peak:'6'}[phase];
+  const defs={
+    easy:{title:'Rolig løbetur',sub:'Let og kontrolleret. Puls lav, samtalevenlig.',displayRange:easyR,km:Math.max(6,Math.round(weekKm*.18)),steps:[{label:'Hele løbet',rep:'',range:easyR,key:true}]},
+    long:{title:'Langtur',sub:phase==='peak'?'Reduceret i taperfasen.':'Grundstensløbet. Byg aerob kapacitet.',displayRange:longR,km:Math.max(12,Math.round(weekKm*(phase==='peak'?.22:.30))),steps:[{label:'Første halvdel',rep:'',range:r(1.22,1.32),key:false},{label:'Anden halvdel',rep:'',range:r(1.15,1.25),key:true},...(phase==='build'?[{label:'Afsluttende 2–3 km',rep:'',range:r(1.05,1.12),key:true}]:[]),]},
+    tempo:{title:'Tempoløb',sub:'Ubehageligt men holdbart. Bygger laktatgrænsen.',displayRange:tempoR,km:Math.max(8,Math.round(weekKm*.18)),steps:[{label:'Opvarmning',rep:'15 min',range:warmR,key:false},{label:'Tempoblok',rep:tmin+' min',range:tempoR,key:true},{label:'Nedvarmning',rep:'10 min',range:coolR,key:false}]},
+    int:{title:'Intervalløb',sub:'Gentagelser med fuld restitution. Øger VO2max.',displayRange:intR,km:Math.max(8,Math.round(weekKm*.16)),steps:[{label:'Opvarmning',rep:'2 km',range:warmR,key:false},{label:'Intervaller',rep:rep+' × 1 km',range:intR,key:true},{label:'Restitution ml. rep',rep:'400 m',range:restR,key:false},{label:'Nedvarmning',rep:'1 km',range:coolR,key:false}]},
+    vo2:{title:'VO2max-drag',sub:'Korte, meget hårde drag. Kræver fuld restitution.',displayRange:vo2R,km:Math.max(6,Math.round(weekKm*.14)),steps:[{label:'Opvarmning',rep:'2 km',range:warmR,key:false},{label:'Drag',rep:(phase==='build'?'8':'6')+' × 400 m',range:vo2R,key:true},{label:'Restitution ml. drag',rep:'400 m',range:restR,key:false},{label:'Nedvarmning',rep:'1 km',range:coolR,key:false}]},
+    race:{title:'Race-pace-løb',sub:'Mærk goalpace. Kontrolleret — ikke fuld indsats.',displayRange:raceR,km:Math.max(7,Math.round(weekKm*.17)),steps:[{label:'Opvarmning',rep:'2 km',range:warmR,key:false},{label:'Race-pace-blok',rep:rbk+' km',range:raceR,key:true},{label:'Nedvarmning',rep:'1 km',range:coolR,key:false}]},
+    rest_run:{title:'Restitutionsløb',sub:'Meget let. Benene i gang uden belastning.',displayRange:restR,km:Math.max(4,Math.round(weekKm*.11)),steps:[{label:'Hele løbet',rep:'30–40 min',range:restR,key:true}]},
+  };
+  return defs[sessId]||defs['easy'];
+}
+
+function renderRec(){
+  const{raw}=getRefs();
+  const d=DISTS[curDist];
+  const req=DIST_REQS[curDist](raw);
+  const box=document.getElementById('recBox');
+  box.style.display='block';
+  document.getElementById('recDist').textContent=d.label;
+  document.getElementById('recTime').textContent='Estimeret sluttid: '+fmtHMS(raw*d.km);
+  document.getElementById('recStats').innerHTML=[
+    {lbl:'Træninger/uge',val:req.sessions+'+',sub:'løbepas anbefalet'},
+    {lbl:'Peak volumen',val:req.peakKm+' km',sub:'pr. uge'},
+    {lbl:'Træningstid/pas',val:req.duration,sub:'typisk varighed'},
+  ].map(s=>`<div class="rs"><div class="rs-lbl">${s.lbl}</div><div class="rs-val" style="color:${d.color}">${s.val}</div><div class="rs-sub">${s.sub}</div></div>`).join('');
+  document.getElementById('recSessions').innerHTML=REC_SESSIONS[curDist].map(s=>
+    `<div class="sess-rec"><div class="sess-dot" style="background:${s.color}"></div><span class="sess-name">${s.name}</span><span class="sess-detail">${s.detail}</span><span class="sess-freq">${s.freq}</span></div>`
+  ).join('');
+}
+
+function render(){
+  const color=DISTS[curDist].color;
+  document.querySelectorAll('.dt').forEach(b=>{
+    if(b.dataset.d===curDist){b.style.background=color;b.style.borderColor='transparent';b.style.color='#fff'}
+    else{b.style.background='';b.style.borderColor='';b.style.color=''}
+  });
+  renderRec();
+  const{raw,hmRef}=getRefs();
+  const weeks=weeksOut();
+  const d=DISTS[curDist];
+  const phase=weeks>12?'base':weeks>5?'build':'peak';
+  const phaseLabel=phase==='base'?'Opbygning':phase==='build'?'Specifik':'Taper';
+  const runIdxs=dayTypes.map((t,i)=>t==='run'?i:-1).filter(i=>i>=0);
+  const bikeIdxs=dayTypes.map((t,i)=>t==='bike'?i:-1).filter(i=>i>=0);
+  const peakKm=DIST_REQS[curDist](raw).peakKm;
+  const weekKm=Math.round(peakKm*(phase==='base'?.62:phase==='build'?.82:.48));
+
+  document.getElementById('planHeading').textContent='Din uge — '+new Date().toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'});
+
+  document.getElementById('statRow').innerHTML=[
+    {lbl:'Fase',val:phaseLabel,sub:weeks+' uger til race'},
+    {lbl:'Løbedage',val:runIdxs.length,sub:bikeIdxs.length?bikeIdxs.length+' cykling':''},
+    {lbl:'Anbefalet km',val:weekKm+' km',sub:'løb denne uge'},
+    {lbl:'Peak km',val:peakKm+' km',sub:'pr. uge'},
+  ].map(s=>`<div class="stat"><div class="stat-lbl">${s.lbl}</div><div class="stat-val">${s.val}</div><div class="stat-sub">${s.sub||'&nbsp;'}</div></div>`).join('');
+
+  const warns=[];
+  const hard=['int','vo2','tempo','race'];
+  [...runIdxs].sort((a,b)=>a-b).forEach((di,idx,arr)=>{
+    if(idx>0&&arr[idx-1]===di-1&&hard.includes(daySessions[arr[idx-1]])&&hard.includes(daySessions[di]))
+      warns.push(`${DAYS_FULL[arr[idx-1]]} og ${DAYS_FULL[di]} er begge hårde pas — overvej hviledag imellem.`);
+  });
+  if(runIdxs.filter(i=>daySessions[i]==='long').length>1)warns.push('Mere end én langtur — vælg den vigtigste.');
+  if(runIdxs.length>=2&&!runIdxs.some(i=>daySessions[i]==='long'))warns.push('Ingen langtur planlagt — vigtigt fundament for udholdenhed.');
+  document.getElementById('warnBox').innerHTML=warns.map(w=>`<div class="warn"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:14px"></i>${w}</div>`).join('');
+
+  document.getElementById('planRows').innerHTML=DAYS_FULL.map((dayName,i)=>{
+    const t=dayTypes[i];
+    if(t==='rest')return`<div class="plan-card rest-card"><div class="pc-head"><span class="pc-day">${dayName}</span><span style="font-size:13px;color:var(--color-text-secondary)">Hvile</span><span></span></div></div>`;
+    if(t==='bike')return`<div class="plan-card bike-card"><div class="pc-head"><span class="pc-day">${dayName}</span><span style="font-size:13px;color:var(--color-text-secondary);font-style:italic">Cykling — eget valg</span><span></span></div></div>`;
+    const sessId=daySessions[i]||'easy';
+    const sess=buildSession(sessId,hmRef,weekKm,phase);
+    const sr=sess.displayRange;
+    const stepsHtml=sess.steps.length>1?`<div class="steps">${sess.steps.map(s=>`<div class="step${s.key?' key':''}">
+      <span class="step-label">${s.label}${s.rep?` <span style="color:var(--color-text-tertiary);font-weight:400">· ${s.rep}</span>`:''}</span>
+      <span></span>
+      <span class="step-pace">${paceRange(s.range.lo,s.range.hi,color,s.key)}</span>
+    </div>`).join('')}</div>`:'';
+    return`<div class="plan-card run-card"><div class="pc-head">
+      <span class="pc-day">${dayName}</span>
+      <div><div class="pc-title">${sess.title}</div><div class="pc-sub">${sess.sub}</div></div>
+      <div class="pc-right"><div style="font-size:13px;font-weight:500;color:${color}">${s2p(sr.lo)}–${s2p(sr.hi)}</div><div class="pc-km">~${sess.km} km</div></div>
+    </div>${stepsHtml}</div>`;
+  }).join('');
+
+  document.getElementById('finishNote').innerHTML=`Estimeret sluttid: <strong>${fmtHMS(raw*d.km)}</strong> &nbsp;·&nbsp; Pace-ranges beregnet fra HM-reference <strong>${s2p(hmRef)} min/km</strong>`;
+}
+
+function doPrint(){
+  window.print();
+}
+
+function setDefaultDate(){
+  const dt=new Date();dt.setDate(dt.getDate()+102);
+  document.getElementById('raceDate').value=dt.toISOString().slice(0,10);
+}
+document.getElementById('pMin').addEventListener('input',render);
+document.getElementById('pSec').addEventListener('input',()=>{const e=document.getElementById('pSec');if(+e.value>59)e.value=59;if(+e.value<0)e.value=0;render()});
+document.getElementById('raceDate').addEventListener('input',render);
+setDefaultDate();renderGrid();render();
+</script>
