@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ugeplanlægger — Adapt & NBRO Running</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F2F0;--white:#FFFFFF;--surface:#F8F8F7;--border:#E4E4E0;--border2:#D0D0CC;
+  --text:#1A1A18;--muted:#888884;--faint:#C8C8C4;
+  --orange:#D95B22;--orange-bg:#FEF0EA;--orange-bd:#F5C5AA;
+  --green:#1A9E68;--green-bg:#EBF8F2;--green-bd:#A8DECA;
+  --yellow:#B8860B;--yellow-bg:#FDF6E3;--yellow-bd:#E8D08A;
+  --red:#CC3333;--red-bg:#FDF0F0;--red-bd:#F0B8B8;
+  --blue:#2E6EBF;--blue-bg:#EBF3FC;--purple:#6B3FA0;--purple-bg:#F0EBF8;
+  --mono:'DM Mono',monospace;--sans:'Inter',system-ui,sans-serif;--radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5}
+.layout{max-width:760px;margin:0 auto;padding:3rem 1.5rem 6rem}
+.site-header{margin-bottom:1.5rem}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.site-title{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.site-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.lang-row{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:3px}
+.lang-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:600;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:var(--mono);letter-spacing:.06em;transition:all .12s}
+.lang-btn:hover{color:var(--text)}
+.lang-btn.active{background:var(--white);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.07)}
+.attribution{font-size:11px;color:var(--faint);margin-top:6px;font-family:var(--mono)}
+.attribution strong{font-weight:500;color:var(--muted)}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:.75rem}
+.card-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.85rem;display:block}
+.dist-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.goal-card{padding:.9rem 1.1rem}
+.goal-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;gap:1rem}
+.goal-date-corner{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.goal-date-corner label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.goal-date-corner input[type=date]{font-size:12px;padding:5px 8px;border-radius:7px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans);width:auto}
+.goal-card .dist-tabs{margin-bottom:.65rem}
+.goal-time-row{display:flex;align-items:center;gap:.75rem;margin-top:.6rem;flex-wrap:wrap}
+
+.match-summary-row{display:flex;align-items:center;gap:10px}
+.match-summary-mid{flex:1;display:flex;flex-direction:column;gap:5px}
+.expand-btn{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;font-family:var(--sans);transition:all .12s;line-height:1.4}
+.expand-btn:hover{background:var(--border);color:var(--text)}
+.goal-rec-divider{height:1px;background:var(--border);margin:.75rem 0}
+.goal-rec-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;gap:12px}
+.goal-rec-left{display:flex;align-items:baseline;gap:10px;flex:1;min-width:0}
+
+.grid-total{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
+.dt{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);transition:all .12s;font-family:var(--sans)}
+.dt:hover{background:var(--surface);color:var(--text)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.sfield{display:flex;flex-direction:column;gap:6px}
+.sfield label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.input-toggle-row{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;width:fit-content}
+.itog{padding:5px 16px;border-radius:6px;font-size:12px;font-weight:500;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;font-family:var(--sans)}
+.itog:hover{color:var(--text)}
+.itog.active{background:var(--white);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.pw{display:flex;align-items:center;gap:5px}
+.pw input{width:56px;font-size:22px;font-weight:600;text-align:center;padding:7px 3px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--mono)}
+.pw input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-bg)}
+.psep{font-size:18px;color:var(--muted);font-family:var(--mono)}
+.punit{font-size:12px;color:var(--muted);font-family:var(--mono);margin-left:2px}
+input[type=date]{width:100%;font-size:14px;padding:8px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans)}
+input[type=date]:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-bg)}
+.derived-note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:5px}
+.acc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;overflow:hidden}
+.atr{width:100%;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;cursor:pointer;background:transparent;border:none;color:var(--text);gap:12px;transition:background .12s}
+.atr:hover{background:var(--surface)}
+.atr-l{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.atr-title{font-size:13px;font-weight:500;white-space:nowrap}
+.atr-meta{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ach{color:var(--muted);transition:transform .2s;flex-shrink:0;font-size:12px}
+.ach.open{transform:rotate(180deg)}
+.ab{padding:0 1.5rem 1.25rem;display:none}
+.ab.open{display:block}
+.rec-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.rg{background:var(--surface);border-radius:8px;padding:10px 12px;border:1px solid var(--border)}
+.rg-l{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.rg-v{font-size:18px;font-weight:600;font-family:var(--mono)}
+.rg-s{font-size:11px;color:var(--muted);margin-top:2px}
+.rs-lbl{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.rs-rows{display:flex;flex-direction:column;gap:4px}
+.sr-row{display:grid;grid-template-columns:8px 1fr auto auto;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sn{font-size:13px;font-weight:500}
+.sd2{font-size:12px;color:var(--muted)}
+.pace-hint{font-family:var(--mono);font-size:11px}
+.sf{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* Week grid */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dc{border:1px solid var(--border);border-radius:var(--radius);padding:8px 5px;display:flex;flex-direction:column;gap:4px;background:var(--white);min-height:60px}
+.dn{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:center;margin-bottom:2px}
+/* Type pills in day card */
+.day-type-pill{border-radius:6px;padding:4px 5px 4px 6px;font-size:10px;margin-bottom:3px}
+.day-type-pill.run-on{background:var(--orange-bg);border:1px solid var(--orange-bd)}
+.day-type-pill.cardio-on{background:var(--blue-bg);border:1px solid #A8C8F0}
+.day-type-pill.strength-on{background:var(--purple-bg);border:1px solid #C4A8E0}
+.dtp-head{display:flex;align-items:center;justify-content:space-between}
+.dtp-label{font-size:10px;font-weight:600;color:var(--text)}
+.run-on .dtp-label{color:var(--orange)}
+.cardio-on .dtp-label{color:var(--blue)}
+.strength-on .dtp-label{color:var(--purple)}
+.dtp-remove{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:0 0 0 4px;line-height:1}
+.dtp-remove:hover{color:var(--red)}
+.ss{width:100%;font-size:10px;padding:3px 4px;border-radius:5px;background:var(--white);border:1px solid var(--border);color:var(--text);font-family:var(--sans);margin-top:3px}
+.dtp-actions{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+.dtp-add{font-size:9px;padding:2px 5px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--sans)}
+.dtp-add:hover{background:var(--surface);color:var(--text)}
+.dtp-rest{font-size:9px;padding:2px 5px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--faint);cursor:pointer;font-family:var(--sans)}
+.dtp-rest:hover{color:var(--red)}
+.dtb{width:100%;padding:6px 2px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;color:var(--muted);text-align:center;transition:all .12s;font-family:var(--sans)}
+.dtb:hover{background:var(--surface);color:var(--text)}
+.dtb.run-on{background:var(--orange-bg);border-color:var(--orange-bd);color:var(--orange);font-weight:600}
+.dtb.cardio-on{background:var(--blue-bg);border-color:#A8C8F0;color:var(--blue);font-weight:600}
+.dtb.strength-on{background:var(--purple-bg);border-color:#C4A8E0;color:var(--purple);font-weight:600}
+.dtb.rest-on{background:var(--surface);border-color:var(--border);color:var(--muted)}
+.dc-rest-btn{width:100%;padding:6px 2px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:10px;color:var(--muted);text-align:center;font-family:var(--sans)}
+.dc-rest-btn:hover{background:var(--border);color:var(--text)}
+
+/* Match */
+.match-summary{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.mini-ring{width:40px;height:40px;border-radius:50%;border:2.5px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mini-pct{font-family:var(--mono);font-size:12px;font-weight:600;line-height:1}
+.match-right{flex:1}
+.mbadge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;display:inline-block;margin-bottom:5px;font-family:var(--mono);letter-spacing:.02em}
+.mbar-w{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.mbar{height:100%;border-radius:2px;transition:width .5s}
+.checks{display:flex;flex-direction:column;gap:5px}
+.cr{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid}
+.cr.ok{background:var(--green-bg);border-color:var(--green-bd)}
+.cr.fail{background:var(--red-bg);border-color:var(--red-bd)}
+.ci{font-size:15px;flex-shrink:0}
+.cb{flex:1}
+.cm{font-size:12px;color:var(--text)}
+.cm b{font-weight:600}
+.ch{font-size:11px;color:var(--muted);margin-top:2px}
+.cw{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.div{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* Plan section */
+.plan-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.ph-btns{display:flex;gap:8px;flex-wrap:wrap}
+.ph-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.ph{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.ph-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.pb{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--white);cursor:pointer;font-size:12px;font-weight:500;color:var(--text);transition:all .12s;font-family:var(--sans)}
+.pb:hover{background:var(--surface);border-color:var(--orange);color:var(--orange)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:1rem}
+.st{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.stl{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.stv{font-size:16px;font-weight:700;font-family:var(--mono)}
+.sts{font-size:10px;color:var(--muted);margin-top:2px}
+.plan-rows{display:flex;flex-direction:column;gap:6px}
+.pc{border-radius:8px;border:1px solid var(--border);background:var(--white);overflow:hidden}
+.pc-today{box-shadow:0 0 0 1.5px var(--orange);}
+.pc.run{border-left:3px solid var(--orange)}
+.pc.alt{border-left:3px solid var(--blue)}
+.pc.str{border-left:3px solid var(--purple)}
+.pc.rest{background:var(--surface);border-color:var(--border);opacity:.65}
+.pch{display:grid;grid-template-columns:88px 1fr auto;align-items:start;gap:14px;padding:11px 14px}
+.pcd{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+.pct{font-size:13px;font-weight:600;color:var(--text)}
+.pcs{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}
+.pcr{text-align:right;min-width:80px}
+.pcp{font-family:var(--mono);font-size:13px;font-weight:600}
+.pace-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:1px}
+.pck{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+.steps{margin:0;border-top:1px solid var(--border)}
+.step{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.sl{font-size:12px;color:var(--muted)}
+.sr2{font-size:10px;color:var(--faint);font-family:var(--mono)}
+.step.key .sl{color:var(--text);font-weight:500}
+.pp{display:inline-block;padding:2px 9px;border-radius:20px;font-family:var(--mono);font-size:11px;font-weight:500;border:1px solid}
+.warn{font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:6px;border:1px solid}
+.warn.w-yellow{color:var(--yellow);background:var(--yellow-bg);border-color:var(--yellow-bd)}
+.warn.w-blue{color:var(--blue);background:var(--blue-bg);border-color:#A8C8F0}
+.pck-edit{display:flex;align-items:center;gap:4px;justify-content:flex-end;margin-top:3px}
+.pck-input{width:40px;font-size:12px;font-weight:600;text-align:center;padding:2px 3px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);cursor:text}
+.pck-input:hover{border-color:var(--orange);background:var(--white)}
+.pck-input:focus{outline:none;border-color:var(--orange);background:var(--orange-bg);color:var(--text)}
+.pck-input.overridden{color:var(--orange);border-color:var(--orange-bd);background:var(--orange-bg)}
+.pck-unit{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.pck-reset{font-size:10px;color:var(--faint);background:none;border:none;cursor:pointer;padding:0;margin-left:1px;display:none}
+.pck-input.overridden ~ .pck-reset{display:inline}
+.pck-reset:hover{color:var(--orange)}
+.update-btn{margin-top:.5rem;padding:7px 18px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .12s}
+.update-btn:hover{background:#c04e1a}
+.fn{font-size:12px;color:var(--muted);padding:12px 0 0;margin-top:8px;font-family:var(--mono);text-align:right;display:flex;flex-direction:row;align-items:baseline;justify-content:flex-end;gap:8px}
+.fn strong{color:var(--text);font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1}
+.fn-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.week-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;flex-wrap:wrap;gap:6px}
+.week-match-row{display:flex;align-items:center;gap:8px}
+.grid-total{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
+.match-expand-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);padding:2px 4px;transition:color .12s}
+.match-expand-btn:hover{color:var(--text)}
+.mini-ring{width:32px;height:32px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mini-pct{font-family:var(--mono);font-size:11px;font-weight:600;line-height:1}
+.mbadge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;font-family:var(--mono);letter-spacing:.02em}
+.week-mini{padding:.9rem 1.1rem}
+.wm-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem;gap:.5rem}
+.wm-footer{display:flex;align-items:baseline;justify-content:space-between;margin-top:.5rem;gap:.5rem}
+.wm-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);flex-shrink:0}
+.wm-val{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text);text-align:right}
+.wm-weeks-row{display:flex;gap:2px;flex-wrap:nowrap;align-items:flex-end;height:40px}
+.wm-bar-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:2px;cursor:pointer}
+.wm-bar-col:hover .wm-bar-seg{filter:brightness(1.15)}
+.wm-bar-seg{border-radius:2px 2px 0 0;width:100%;transition:height .3s}
+.wm-current{outline:2px solid var(--orange);outline-offset:1px}
+.wm-tip{position:absolute;top:calc(100% + 6px);background:var(--text);color:var(--white);font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:5px;white-space:nowrap;z-index:10;pointer-events:none}
+@media(max-width:640px){
+  .two-col{grid-template-columns:1fr}
+  .layout{padding:1rem .75rem 4rem}
+  .week-grid{gap:3px}
+  .dc{padding:7px 3px;min-height:50px}
+  .dn{font-size:9px}
+  .dtb{font-size:10px;padding:5px 1px}
+  .ss{font-size:9px;padding:2px 3px}
+  .day-km-label{font-size:9px}
+  .pch{grid-template-columns:72px 1fr auto;gap:8px;padding:10px 10px}
+  .pcp{font-size:12px}
+  .pck{font-size:10px}
+  .pct{font-size:13px}
+  .pcs{font-size:11px}
+  .steps{margin:0 10px 10px}
+  .step{gap:6px;padding:5px 0}
+  .sl{font-size:11px}
+  .pp{font-size:10px;padding:2px 6px}
+  .plan-section{padding:1rem}
+  .ph-row{flex-wrap:wrap;gap:8px}
+  .ph{font-size:14px}
+  .fn strong{font-size:22px}
+  .atr{padding:.75rem 1rem}
+  .card{padding:1rem}
+  .rec-g{grid-template-columns:repeat(2,1fr)}
+  .sr-row{grid-template-columns:8px 1fr auto;gap:6px}
+  .sf{display:none}
+  .pw input{width:52px;font-size:22px}
+}
+@media print{
+  .print-attribution{display:block!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .np{display:none!important}
+  html{background:#fff}
+  .layout{padding:20px 24px}
+  .plan-section{box-shadow:none;border:1px solid #ddd}
+  .pc{page-break-inside:avoid}
+  @page{margin:1.5cm;size:A4}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<header class="site-header np">
+  <div class="header-top">
+    <div>
+      <div class="site-title" id="siteTitle">Ugeplanlægger</div>
+
+    </div>
+    <div class="lang-row">
+      <button class="lang-btn active" id="btnDa" onclick="setLang('da')">DA</button>
+      <button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <div class="attribution" id="attribution">Bygget af <strong>Ask Hybel</strong> · Adapt &amp; NBRO Running</div>
+</header>
+
+<div class="acc np" style="margin-bottom:1rem">
+  <button class="atr" onclick="toggleAcc('How')" style="padding:.8rem 1.5rem">
+    <div class="atr-l"><span style="font-size:14px">ℹ️</span><span class="atr-title" id="howTitle">Sådan virker modellen</span></div>
+    <span class="ach" id="achHow">▾</span>
+  </button>
+  <div class="ab" id="abHow">
+    <div id="howContent" style="font-size:12px;color:#555550;line-height:1.75;display:flex;flex-direction:column;gap:.75rem"></div>
+  </div>
+</div>
+
+<div class="card np goal-card">
+  <div class="goal-header-row">
+    <span class="card-label" style="margin-bottom:0" id="lblGoal">Målsætning</span>
+    <div class="goal-date-corner">
+      <label id="lblRaceDay">Racedag</label>
+      <input type="date" id="raceDate">
+    </div>
+  </div>
+  <div class="dist-tabs" id="distTabs">
+    <button class="dt" data-d="5k" onclick="setDist(this)">5 km</button>
+    <button class="dt" data-d="10k" onclick="setDist(this)">10 km</button>
+    <button class="dt on" data-d="hm" onclick="setDist(this)">Halvmarathon</button>
+    <button class="dt" data-d="m" onclick="setDist(this)">Marathon</button>
+  </div>
+  <div class="goal-time-row">
+    <label id="paceLabel" style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:5px">Sluttid</label>
+    <div class="pw">
+      <input type="number" id="tHour" min="0" max="9" value="1" aria-label="Timer" oninput="onTimePreview()">
+      <span class="psep">:</span>
+      <input type="number" id="tMin" min="0" max="59" value="30" aria-label="Minutter" oninput="onTimePreview()">
+      <span class="psep">:</span>
+      <input type="number" id="tSec" min="0" max="59" value="0" aria-label="Sekunder" oninput="onTimePreview()">
+    </div>
+    <div class="derived-note" id="timeToPace"></div>
+    <button class="update-btn np" id="updateBtn" onclick="applyTime()" style="display:none"></button>
+  </div>
+  <div class="goal-rec-divider"></div>
+  <div class="goal-rec-header">
+    <div class="goal-rec-left">
+      <span class="card-label" style="margin-bottom:0" id="recTitle">Generelle anbefalinger</span>
+      <span id="atrMeta" style="font-size:12px;color:var(--muted)"></span>
+    </div>
+    <button class="expand-btn" id="achRec" onclick="toggleRec()">Vis detaljer</button>
+  </div>
+  <div id="abRec" style="display:none;margin-top:.75rem">
+    <div class="rec-g" id="recG"></div>
+    <div class="rs-lbl" id="rsLbl">Anbefalet fordeling</div>
+    <div class="rs-rows" id="rsRows"></div>
+  </div>
+</div>
+
+<div class="card np" style="padding:1rem 1.5rem">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.75rem">
+    <span class="card-label" style="margin-bottom:0" id="lblDays">Ugens dage</span>
+    <span id="gridTotal" class="grid-total"></span>
+  </div>
+  <div class="week-grid" id="weekGrid"></div>
+  <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+    <div class="match-summary-row">
+      <div class="mini-ring" id="miniRing"><span class="mini-pct" id="miniPct">—</span></div>
+      <div class="match-summary-mid">
+        <span class="mbadge" id="mbadge"></span>
+        <div class="mbar-w"><div class="mbar" id="mbar" style="width:0%"></div></div>
+      </div>
+      <button class="expand-btn" onclick="toggleAcc('Match')" id="matchExpandBtn">Vis detaljer</button>
+    </div>
+    <div id="abMatch" style="display:none;margin-top:.75rem">
+      <div class="checks" id="checks"></div>
+    </div>
+  </div>
+</div>
+
+<div class="div np"></div>
+
+<div id="weekMini" class="card np week-mini"></div>
+
+<div class="plan-section">
+  <div class="ph-row">
+    <div><div class="ph" id="ph">Din uge</div><div class="ph-sub" id="phSub"></div></div>
+    <div class="ph-btns np">
+      <button class="pb" id="printBtn" onclick="window.print()">🖨&nbsp; Udskriv / PDF</button>
+      <button class="pb" id="calBtn" onclick="downloadICS()">📅&nbsp; <span id="calBtnLbl">Download kalender</span></button>
+    </div>
+  </div>
+  <div id="warnBox"></div>
+  <div class="plan-rows" id="planRows"></div>
+  <div class="fn" id="fn"></div>
+
+</div>
+
+<div class="print-attribution" style="display:none;text-align:center;margin-top:24px;font-size:10px;color:#999;font-family:'DM Mono',monospace;letter-spacing:.05em">Lavet af Ask Hybel · Adapt / NBRO Running · weekbuilder.run</div>
+
+</div>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const DISTS={
+  '5k': {label:['5 km','5 km'],km:5,color:'#534AB7',cf:0.92},
+  '10k':{label:['10 km','10 km'],km:10,color:'#1A9E68',cf:0.95},
+  'hm': {label:['Halvmarathon','Half marathon'],km:21.0975,color:'#D95B22',cf:1.00},
+  'm':  {label:['Marathon','Marathon'],km:42.195,color:'#2E6EBF',cf:1.08},
+};
+const REQS={
+  '5k': p=>({s:4, pk:p<216?70:p<240?60:p<270?50:42,  dur:'30–60 min', minS:3,minH:2}),
+  '10k':p=>({s:4,          pk:p<240?90:p<270?75:p<300?65:55,  dur:'40–70 min', minS:3,minH:2}),
+  'hm': p=>({s:4,           pk:p<256?105:p<300?88:p<341?72:60, dur:'50–90 min', minS:3,minH:2}),
+  'm':  p=>({s:4,            pk:p<256?130:p<298?108:p<341?88:72,dur:'55–120 min',minS:4,minH:2}),
+};
+const REC={
+  '5k':[
+    {n:['Langtur','Long run'],             d:['8–14 km, zone 2','5–9 mi, zone 2'],             f:'1×/uge', c:'#1A9E68'},
+    {n:['Intervalløb','Intervals'],        d:['6–10 × 200–600 m','6–10 × 200–600m'],           f:'1×/uge', c:'#CC3333'},
+    {n:['Tempoløb','Tempo run'],           d:['3–5 km i tempopace','2–3 mi at tempo'],          f:'1×/uge', c:'#B8860B'},
+    {n:['Let løb','Easy run'],             d:['Zone 2, 6–10 km','Zone 2, 4–6 mi'],             f:'1–2×/uge',c:'#888884'},
+    {n:['Styrketræning','Strength'],       d:['Core, hofter, plyometri','Core, hips, plyometrics'],f:'1–2×/uge',c:'#6B3FA0'},
+    {n:['Alternativ træning','Alt. training'],d:['Aktiv restitution','Active recovery'],        f:['Valgfrit','Optional'],c:'#2E6EBF'},
+  ],
+  '10k':[
+    {n:['Langtur','Long run'],             d:['12–18 km, zone 2','7–11 mi, zone 2'],            f:'1×/uge', c:'#1A9E68'},
+    {n:['Intervalløb','Intervals'],        d:['5–8 × 800 m–1,5 km','5–8 × 800m–1mi'],          f:'1×/uge', c:'#CC3333'},
+    {n:['Tempoløb','Tempo run'],           d:['4–8 km i tempopace','2.5–5 mi at tempo'],        f:'1×/uge', c:'#B8860B'},
+    {n:['Let løb','Easy run'],             d:['Zone 2, 8–12 km','Zone 2, 5–7 mi'],              f:'1–2×/uge',c:'#888884'},
+    {n:['Styrketræning','Strength'],       d:['Core, glutes, excentrisk','Core, glutes, eccentric'],f:'1–2×/uge',c:'#6B3FA0'},
+    {n:['Alternativ træning','Alt. training'],d:['Aerob supplement','Aerobic supplement'],      f:['Valgfrit','Optional'],c:'#2E6EBF'},
+  ],
+  'hm':[
+    {n:['Langtur','Long run'],             d:['16–24 km, zone 2','10–15 mi, zone 2'],           f:'1×/uge', c:'#1A9E68'},
+    {n:['HM-pace-løb','HM pace run'],      d:['6–12 km i HM-pace','4–7 mi at HM pace'],         f:'1×/uge', c:'#D95B22'},
+    {n:['Tempoløb','Tempo run'],           d:['5–8 km i tempopace','3–5 mi at tempo'],           f:'1×/uge', c:'#B8860B'},
+    {n:['Let løb','Easy run'],             d:['Zone 2, 8–14 km','Zone 2, 5–9 mi'],              f:'1–2×/uge',c:'#888884'},
+    {n:['Styrketræning','Strength'],       d:['Core, hofter, løbespecifik','Core, hips, run-specific'],f:'1×/uge',c:'#6B3FA0'},
+    {n:['Alternativ træning','Alt. training'],d:['Vedligeholder volumen skadefrit','Maintains volume injury-free'],f:['Valgfrit','Optional'],c:'#2E6EBF'},
+  ],
+  'm':[
+    {n:['Langtur','Long run'],             d:['22–35 km, zone 2','14–22 mi, zone 2'],           f:'1×/uge', c:'#1A9E68'},
+    {n:['Maratonpace-løb','M-pace run'],   d:['10–20 km i M-pace','6–12 mi at M pace'],         f:'1×/uge', c:'#2E6EBF'},
+    {n:['Tempoløb','Tempo run'],           d:['6–10 km i tempopace','4–6 mi at tempo'],          f:'1×/uge', c:'#B8860B'},
+    {n:['Let løb','Easy run'],             d:['Zone 2, 10–16 km','Zone 2, 6–10 mi'],            f:'2×/uge', c:'#888884'},
+    {n:['Styrketræning','Strength'],       d:['Core, glutes — skadesforebyggende','Core, glutes — injury prevention'],f:'1×/uge',c:'#6B3FA0'},
+    {n:['Alternativ træning','Alt. training'],d:['Spar benene, hold iltoptagelsen','Save legs, maintain aerobic base'],f:['Valgfrit','Optional'],c:'#2E6EBF'},
+  ],
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let curDist='hm';
+let inputMode='pace';
+let lang='da';
+// dayTypes: array[7] of string[] — each day can have multiple activity types
+// types: 'run','cardio','strength','rest'
+let dayTypes=['run','rest','run','run','rest','run','rest'];
+let daySessions={0:'tempo',2:'int',3:'easy',5:'long'};
+let dayKmOverride={}; // dayIndex -> override km in local units
+let manualKmMode=false; // true when user has manually set any km
+let dayVariantOverride={}; // dayIndex -> variant index override for int/tempo/vo2/race/long
+
+// ── TRANSLATIONS ───────────────────────────────────────────────────────────
+const T={
+  da:{
+    siteTitle:'Ugeplanlægger',siteSub:'Sæt dit mål — byg din uge',
+    attribution:'Bygget af',builtBy:'Bygget af',
+    howTitle:'Sådan virker modellen',
+    howContent:[
+      `<strong style='color:#1A1A18'>Modellen kender ikke dig</strong> — den ved ikke hvad din form er, hvad du har løbet tidligere, eller om du er kommet fra skade. Det er bevidst. Den regner baglæns fra din sluttidsmålsætning og beregner alle træningspaces og volumen ud fra det.`,
+      `<strong style='color:#1A1A18'>Jack Daniels' VDOT-system</strong> — alle paces er beregnet ud fra den mest udbredte videnskabeligt funderede model for løbetræning. Den definerer præcise zoner relativt til dit race-pace: let løb (zone 2), tærskel/tempo, intervaller og VO2max. Jo hurtigere dit mål, jo hurtigere alle dine træningspaces.`,
+      `<strong style='color:#1A1A18'>Pace-ranges snævres ind mod race day.</strong> Tidligt er der luft i den hurtige ende — du er ikke i form endnu. Jo færre uger der er tilbage, jo smallere bliver ranges, og mod slutningen træner du reelt på dit goalpace.`,
+      `<strong style='color:#1A1A18'>Progressiv volumen med cut-back og taper.</strong> Volumen stiger mod en peak-uge, med cut-back hver 4. uge. Taperen er 1 uge (5/10 km), 2 uger (halvmarathon) og 3 uger (marathon). Ugevolumenen fordeles automatisk på de løbedage du vælger — flere dage giver kortere individuelle ture, færre dage giver længere.`,
+      `<strong style='color:#1A1A18'>Sessions varierer uge for uge.</strong> Intervalløb, tempoløb og langture roterer gennem 6 varianter pr. distance, så du ikke laver nøjagtigt det samme hver uge. Du kan altid vælge en specifik variant manuelt.`,
+      `<strong style='color:#1A1A18'>Ugen tilpasser sig din målsætning.</strong> En hurtig løber (1:26 halvmarathon) starter med 6 løbedage og høj volumen. En ny løber (2:15 halvmarathon) starter med 4 dage og moderat volumen. Modellen beregner antallet af løbedage og km pr. pas ud fra hvad der er optimalt for dit niveau.`,
+      `<strong style='color:#1A1A18'>Modellen erstatter ikke en træner.</strong> Den giver et velstruktureret udgangspunkt, men tager ikke højde for din historik, skadesrisiko, livssituation eller dagsform. Brug den som ramme — og juster.`,
+    ],
+    togPace:'Pace',togTime:'Sluttid',
+    lblGoal:'Målsætning',lblDist:'Måldistance',lblRaceDay:'Racedag',lblDays:'Ugens dage',
+    paceLabel:'Sluttid',
+    recTitle:'Generelle anbefalinger',weekLabel:'Uge',showDetails:'Vis detaljer',hideDetails:'Skjul',rsLbl:'Anbefalet fordeling',
+    recStatLabels:['Træninger/uge','Peak volumen','Tid/pas'],
+    recStatSubs:['løbepas','pr. uge','typisk'],
+    matchGood:'God uge ✓',matchClose:'Næsten der',matchAdjust:'Juster planen',
+    dayNames:['Man','Tir','Ons','Tor','Fre','Lør','Søn'],
+    dayNamesFull:['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'],
+    typeLabels:{run:'Løb',cardio:'Alternativ træning',strength:'Styrke',rest:'Hvile'},
+    addLabels:{run:'+ Løb',cardio:'+ Alt. træning',strength:'+ Styrke'},
+    restLabel:'Hvile',
+    printBtn:'🖨\u00a0 Udskriv / PDF',
+    calBtn:'Download kalender',
+    totalLabel:'Total denne uge',
+    phases:{base:'Opbygning',build:'Specifik',taper:'Taper',race:'Race-uge'},
+    statsLabels:{fase:'Fase',dage:'Løbedage',km:'Km denne uge',peak:'Peak km'},
+    statsSubs:{race:'uger til race',cykling:'alt. træning',anbefalet:'anbefalet',pruge:'pr. uge'},
+    sessTypes:[
+      {id:'easy',label:'Rolig løbetur / restitution'},{id:'long',label:'Langtur'},
+      {id:'tempo',label:'Tempoløb'},{id:'int',label:'Intervalløb'},
+      {id:'vo2',label:'VO2max-drag'},{id:'race',label:'Race-pace-løb'},
+    ],
+    sessData:{
+      easy:{t:'Rolig løbetur / restitution',s:'Let og kontrolleret. Samtalevenlig tempo — bruges til både daglige løbeture og restitution.'},
+      long:{t:'Langtur',sNorm:'Grundstensløbet — byg aerob kapacitet.',sTaper:'Reduceret langtur — hold benene friske.'},
+      tempo:{t:'Tempoløb',s:'Ubehageligt men holdbart. Bygger laktatgrænsen.'},
+      int:{t:'Intervalløb',s:'Gentagelser med fuld restitution. Øger VO2max.'},
+      vo2:{t:'VO2max-drag',s:'Korte, meget hårde drag.'},
+      race:{t:'Race-pace-løb',s:'Mærk goalpace. Kontrolleret — ikke fuld indsats.'},
+
+    },
+    stepLabels:{warm:'Opvarmning',firstHalf:'Første halvdel',secondHalf:'Anden halvdel',lastKm:'Afsluttende 2–3 km',tempo:'Tempoblok',intervals:'Intervaller',restRep:'Restitution ml. rep',cool:'Nedvarmning',drag:'Drag',restDrag:'Restitution ml. drag',raceBlok:'Race-pace-blok',maraBlok:'Maratonpace-blok',whole:'Hele løbet'},
+    cardioNote:'Alternativ træning — cykling, svømning, roning o.l.',
+    strengthNote:'Styrketræning — løbespecifik, core og hofter',
+    restNote:'Hvile',
+    checkLabels:{long:'Langtur',quality:'Kvalitetstræning',days:'Antal løbedage',easy:'Let løb',spread:'Belastningsfordeling',vol:'Volumen'},
+    checkPass:{long:'Langtur planlagt',easy:'Zone 2-løb planlagt',spread:'God spredning af hårde pas'},
+    checkFail:{long:'Ingen langtur planlagt',easy:'Ingen lette løb planlagt',spread:'To hårde pas i træk'},
+    checkHints:{long:'Tilføj langtur som din sidste løbedag',easy:'Tilføj rolig løbetur eller restitutionsløb',spread:'Sæt hvile eller let løb imellem'},
+    matchNote:'Alternativ træning og styrke indgår ikke i beregningen.',
+    cutbackNote:'Cut-back uge — -25% volumen. Lad kroppen absorbere de seneste ugers træning.',
+    taperNote:(w,tw,pct)=>`Taper uge ${tw-(w-1)} af ${tw} — volumen reduceret med ~${pct}%. Behold kvalitetspas, men reducer distance.`,
+    consecWarn:(d1,d2)=>`${d1} og ${d2} er begge hårde — overvej hviledag imellem.`,
+    derivedPace:(h,m,s)=>'→ sluttid: '+(h?h+'t ':'')+m+':'+s,
+    derivedTime:(m,s)=>`→ pace: ${m}:${s} min/km`,
+  },
+  en:{
+    siteTitle:'Training Planner',siteSub:'Set your goal — build your week',
+    attribution:'Built by',builtBy:'Built by',
+    howTitle:'How the model works',
+    howContent:[
+      `<strong style='color:#1A1A18'>The model doesn't know you</strong> — it has no idea what shape you're in, what you've run before, or whether you're coming back from injury. That's intentional. It works backwards from your finish time goal and calculates all training paces and volume from that.`,
+      `<strong style='color:#1A1A18'>Jack Daniels' VDOT system</strong> — all paces are calculated using the most widely used evidence-based model for running training. It defines precise zones relative to your race pace: easy (zone 2), threshold/tempo, intervals, and VO2max. The faster your goal, the faster all your training paces.`,
+      `<strong style='color:#1A1A18'>Pace ranges narrow as race day approaches.</strong> Early in a plan there's room at the fast end — you're not in shape yet. The closer you get, the tighter the ranges, and in the final weeks you're training at actual goal pace.`,
+      `<strong style='color:#1A1A18'>Progressive volume with cut-back weeks and taper.</strong> Volume builds toward a peak week, with cut-back every 4th week. Taper is 1 week (5/10km), 2 weeks (half marathon), 3 weeks (marathon). Weekly volume is distributed automatically across your run days — more days means shorter individual sessions; fewer days means longer ones.`,
+      `<strong style='color:#1A1A18'>Sessions rotate week to week.</strong> Intervals, tempo runs and long runs cycle through 6 variants per distance so you're not doing exactly the same thing every week. You can always select a specific variant manually.`,
+      `<strong style='color:#1A1A18'>The week adapts to your goal.</strong> A fast runner (1:26 half marathon) starts with 6 run days and high volume. A newer runner (2:15 half marathon) starts with 4 days and moderate volume. The model calculates the number of run days and km per session based on what's optimal for your level.`,
+      `<strong style='color:#1A1A18'>The model is not a coach.</strong> It gives a well-structured starting point but doesn't account for your history, injury risk, life circumstances or daily form. Use it as a framework — and adjust.`,
+    ],
+    togPace:'Pace',togTime:'Finish time',
+    lblGoal:'Goal',lblDist:'Target distance',lblRaceDay:'Race day',lblDays:'Days of the week',
+    paceLabel:'Finish time',
+    recTitle:'General recommendations',weekLabel:'Week',showDetails:'Show details',hideDetails:'Hide',rsLbl:'Recommended distribution',
+    recStatLabels:['Sessions/week','Peak volume','Time/session'],
+    recStatSubs:['run sessions','per week','typical'],
+    matchGood:'Great week ✓',matchClose:'Almost there',matchAdjust:'Adjust plan',
+    dayNames:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    dayNamesFull:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+    typeLabels:{run:'Run',cardio:'Alt. training',strength:'Strength',rest:'Rest'},
+    addLabels:{run:'+ Run',cardio:'+ Alt. training',strength:'+ Strength'},
+    restLabel:'Rest',
+    printBtn:'🖨\u00a0 Print / PDF',
+    calBtn:'Download calendar',
+    totalLabel:'Total this week',
+    phases:{base:'Base',build:'Build',taper:'Taper',race:'Race week'},
+    statsLabels:{fase:'Phase',dage:'Run days',km:'Km this week',peak:'Peak km'},
+    statsSubs:{race:'weeks to race',cykling:'alt. training',anbefalet:'recommended',pruge:'per week'},
+    sessTypes:[
+      {id:'easy',label:'Easy / recovery run'},{id:'long',label:'Long run'},
+      {id:'tempo',label:'Tempo run'},{id:'int',label:'Interval run'},
+      {id:'vo2',label:'VO2max reps'},{id:'race',label:'Race pace run'},
+    ],
+    sessData:{
+      easy:{t:'Easy / recovery run',s:'Light and controlled. Conversational pace — used for both easy days and active recovery.'},
+      long:{t:'Long run',sNorm:'The cornerstone run — build aerobic capacity.',sTaper:'Reduced long run — keep the legs fresh.'},
+      tempo:{t:'Tempo run',s:'Comfortably hard. Builds lactate threshold.'},
+      int:{t:'Interval run',s:'Repetitions with full recovery. Raises VO2max.'},
+      vo2:{t:'VO2max reps',s:'Short, very hard reps.'},
+      race:{t:'Race pace run',s:'Feel your goal pace. Controlled — not full effort.'},
+
+    },
+    stepLabels:{warm:'Warm-up',firstHalf:'First half',secondHalf:'Second half',lastKm:'Final 2–3 km',tempo:'Tempo block',intervals:'Intervals',restRep:'Recovery between reps',cool:'Cool-down',drag:'Reps',restDrag:'Recovery between reps',raceBlok:'Race pace block',maraBlok:'Marathon pace block',whole:'Whole run'},
+    cardioNote:'Alternative training — cycling, swimming, rowing etc.',
+    strengthNote:'Strength training — running-specific, core and hips',
+    restNote:'Rest',
+    checkLabels:{long:'Long run',quality:'Quality sessions',days:'Run days',easy:'Easy run',spread:'Load distribution',vol:'Volume'},
+    checkPass:{long:'Long run planned',easy:'Zone 2 run planned',spread:'Good distribution of hard sessions'},
+    checkFail:{long:'No long run planned',easy:'No easy runs planned',spread:'Two hard sessions back to back'},
+    checkHints:{long:'Add a long run as your last run day',easy:'Add an easy run or recovery run',spread:'Place rest or easy run between hard sessions'},
+    matchNote:'Alt. training and strength are not included in the score.',
+    cutbackNote:'Cut-back week — -25% volume. Let the body absorb recent training.',
+    taperNote:(w,tw,pct)=>`Taper week ${tw-(w-1)} of ${tw} — volume reduced by ~${pct}%. Keep quality sessions, reduce distance.`,
+    consecWarn:(d1,d2)=>`${d1} and ${d2} are both hard — consider a rest day between.`,
+    derivedPace:(h,m,s)=>'→ finish time: '+(h?h+'h ':'')+m+':'+s,
+    derivedTime:(m,s)=>{ const mi=((parseInt(m)*60+parseInt(s))*0.621371); const mm=Math.floor(mi/60),ss=Math.round(mi%60); return `→ pace: ${mm}:${String(ss).padStart(2,'0')} min/mi`; },
+  }
+};
+function tr(){return T[lang]}
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function pad(n){return String(Math.round(n)).padStart(2,'0')}
+function s2p(s){const m=Math.floor(s/60),sc=Math.round(s%60);return m+':'+pad(sc)}
+function dp(s){
+  // display pace — km or miles depending on lang
+  if(lang==='en'){
+    const mi=s*0.621371;
+    const m=Math.floor(mi/60),sc=Math.round(mi%60);
+    return m+':'+pad(sc);
+  }
+  return s2p(s);
+}
+function distUnit(){return lang==='en'?'mi':'km'}
+function kmToUnit(km){return lang==='en'?Math.round(km*0.621371*10)/10:km}
+// Convert km/m distance strings to miles when lang==='en'
+// e.g. "4 × 2km (800m jog)" → "4 × 1.2mi (0.5mi jog)"
+function kStr(kmVal){return lang==='en'?(Math.round(kmVal*0.621371*10)/10)+' mi':kmVal+' km'}
+function mStr(mVal){
+  if(lang!=='en') return mVal+' m';
+  const mi=mVal/1609.34;
+  return mi<0.1?(Math.round(mVal*0.00621371*100)/100)+' mi':Math.round(mi*100)/100+' mi';
+}
+function fmtH(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=Math.round(s%60);return(h?h+'t ':'')+pad(m)+':'+pad(sc)}
+function wOut(){const v=document.getElementById('raceDate').value;if(!v)return 15;return Math.max(0,Math.round((new Date(v)-new Date())/(1000*60*60*24*7)))}
+function taperWeeks(){return{'5k':1,'10k':1,'hm':2,'m':3}[curDist]}
+function calcPhase(w){const tw=taperWeeks();if(w<=0)return'race';if(w<=tw)return'taper';if(w<=tw+4)return'build';return'base'}
+function calcWeekKm(pkKm,w){
+  const tw=taperWeeks();
+  if(w<=0)return Math.round(pkKm*0.25);
+  if(w<=tw){const f={'5k':[0.4],'10k':[0.4],'hm':[0.6,0.35],'m':[0.65,0.45,0.25]}[curDist];return Math.round(pkKm*(f[tw-w]||0.3))}
+  const total={'5k':8,'10k':10,'hm':14,'m':18}[curDist];
+  const wip=Math.max(1,total-(w-tw)+1);
+  const prog=Math.min(wip/total,1.0);
+  const cb=(wip%4===0);
+  let vol=pkKm*(0.50+prog*0.50);
+  if(cb)vol*=0.75;
+  return Math.round(Math.max(vol,pkKm*0.40));
+}
+function getWN(d){const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),day=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-day);const y=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-y)/86400000)+1)/7)}
+
+// ── INPUT MODE ─────────────────────────────────────────────────────────────
+function gRef(){
+  const raw=rawFromTime();
+  return{raw,hmRef:raw/DISTS[curDist].cf};
+}
+function rawFromPace(){return rawFromTime();} // pace input removed — fallback to time
+function rawFromTime(){const h=parseInt(document.getElementById('tHour').value)||0,m=parseInt(document.getElementById('tMin').value)||0,s=Math.max(0,Math.min(59,parseInt(document.getElementById('tSec').value)||0));return(h*3600+m*60+s)/DISTS[curDist].km}
+function setInputMode(mode){ /* deprecated */ }
+function onPaceChange(){ /* deprecated */ }
+function onTimeChange(){
+  const raw=rawFromTime();
+  if(raw>0){
+    const pm=Math.floor(raw/60),ps=Math.round(raw%60);
+    document.getElementById('timeToPace').textContent=tr().derivedTime(pm,pad(ps));
+  }
+  render();
+}
+function onTimePreview(){
+  // Just update the derived pace note — don't rerender
+  const raw=rawFromTime();
+  if(raw>0){
+    const pm=Math.floor(raw/60),ps=Math.round(raw%60);
+    document.getElementById('timeToPace').textContent=tr().derivedTime(pm,pad(ps));
+  }
+  // Show the update button
+  const btn=document.getElementById('updateBtn');
+  if(btn){
+    btn.style.display='block';
+    btn.textContent=tr().updateBtn||'Opdater plan';
+  }
+}
+function applyTime(){
+  // Reset per-day km overrides since target pace changed
+  dayKmOverride={};
+  manualKmMode=false;
+  // Recalculate defaults for new pace
+  distDefaults(curDist);
+  // Hide update button
+  const btn=document.getElementById('updateBtn');
+  if(btn) btn.style.display='none';
+  rGrid();render();
+}
+
+// ── ACCORDION ──────────────────────────────────────────────────────────────
+function toggleAcc(id){
+  const b=document.getElementById('ab'+id);
+  if(!b) return;
+  const isOpen=b.style.display==='block';
+  b.style.display=isOpen?'none':'block';
+  if(id==='Match'){
+    const btn=document.getElementById('matchExpandBtn');
+    if(btn) btn.textContent=isOpen?tr().showDetails:tr().hideDetails;
+  } else if(id==='Rec'){
+    const c=document.getElementById('achRec');
+    if(c) c.textContent=isOpen?tr().showDetails:tr().hideDetails;
+  } else {
+    const c=document.getElementById('ach'+id);
+    if(c) c.textContent=isOpen?'▾':'▴';
+  }
+}
+function toggleRec(){toggleAcc('Rec');}
+
+// ── DIST ──────────────────────────────────────────────────────────────────
+function distDefaults(dist){
+  // Optimal week — always starts at the best structure for each distance,
+  // then adds days strategically (quality before easy) until volume target hit.
+  // Mon=0 Tue=1 Wed=2 Thu=3 Fri=4 Sat=5 Sun=6
+
+  const weeks=wOut();
+  const phase=calcPhase(weeks);
+  const ref=gRef();
+  const req=REQS[dist](ref.raw);
+  const wKm=calcWeekKm(req.pk,weeks);
+  const hmRef=ref.hmRef;
+  const wn=getWN(new Date());
+
+  function plannedTotal(types,sessions){
+    const ri=types.map((t,i)=>t==='run'?i:-1).filter(i=>i>=0);
+    return ri.reduce((sum,i)=>sum+bSess(sessions[i]||'easy',hmRef,wKm,phase,weeks,ri.length,wn,i).km,0);
+  }
+
+  // ── Base 4-day structure ────────────────────────────────────────
+  if(dist==='5k'){
+    dayTypes=['run','rest','run','run','rest','run','rest'];
+    daySessions={0:'tempo',2:'int',3:'easy',5:'long'};
+  } else if(dist==='10k'){
+    dayTypes=['run','rest','run','run','rest','run','rest'];
+    daySessions={0:'tempo',2:'int',3:'easy',5:'long'};
+  } else if(dist==='hm'){
+    // Base 5 days: Mon=tempo, Tue=easy, Wed=int, Thu=easy, Fri=REST, Sat=long
+    dayTypes=['run','run','run','run','rest','run','rest'];
+    daySessions={0:'tempo',1:'easy',2:'int',3:'easy',5:'long'};
+  } else { // marathon — quality on Tue, intervals Wed
+    dayTypes=['run','run','run','rest','rest','run','rest'];
+    daySessions={0:'easy',1:'tempo',2:'int',5:'long'};
+  }
+
+  // ── Add days to hit volume — quality first, then easy ──────────
+  // Priority order: quality slots → easy slots, max 6 days
+  // Slots by distance/priority:
+  const addSlots={
+    '5k':  [{d:1,s:'easy'}],                              // Tue easy (Fri stays free)
+    '10k': [{d:1,s:'easy'},{d:6,s:'easy'}],               // Tue easy, Sun easy (Fri stays free)
+    'hm':  [{d:6,s:'easy'},{d:4,s:'easy'}], // Sun easy (6th), then Fri (last resort)
+    'm':   [{d:3,s:'easy'},{d:6,s:'easy'},{d:4,s:'easy'}], // Thu easy, Sun easy, Fri last resort
+  };
+
+  const slots=addSlots[dist]||[];
+  for(let i=0;i<slots.length;i++){
+    const runCount=dayTypes.filter(t=>t==='run').length;
+    if(runCount>=6) break;
+    const minDays=dist==='m'?5:4;
+    const belowMin=runCount<minDays;
+    // HM base is 5 days — accept slightly lower threshold so we don't auto-add a 6th
+    const volThreshold=dist==='hm'?0.85:0.90;
+    const belowVol=plannedTotal(dayTypes,daySessions)<wKm*volThreshold;
+    if(!belowMin&&!belowVol) break;
+    const {d,s}=slots[i];
+    if(dayTypes[d]==='rest'){
+      dayTypes[d]='run';
+      daySessions[d]=s;
+    }
+  }
+}
+const DIST_DEFAULTS_TIME={'5k':[0,20,0],'10k':[0,40,0],'hm':[1,30,0],'m':[3,0,0]};
+
+function setDist(btn){
+  document.querySelectorAll('.dt').forEach(b=>{b.classList.remove('on');b.style.background='';b.style.borderColor='';b.style.color=''});
+  btn.classList.add('on');curDist=btn.dataset.d;
+  const c=DISTS[curDist].color;
+  btn.style.background=c+'18';btn.style.borderColor=c+'88';btn.style.color=c;
+  document.querySelectorAll('.dt').forEach(b=>{
+    const d=DISTS[b.dataset.d];
+    if(d) b.textContent=Array.isArray(d.label)?d.label[lang==='en'?1:0]:d.label;
+  });
+  const dt=DIST_DEFAULTS_TIME[curDist];
+  if(dt){
+    document.getElementById('tHour').value=dt[0];
+    document.getElementById('tMin').value=dt[1];
+    document.getElementById('tSec').value=dt[2];
+  }
+  const ub=document.getElementById('updateBtn');
+  if(ub) ub.style.display='none';
+  dayKmOverride={};
+  dayVariantOverride={};
+  manualKmMode=false;
+  distDefaults(curDist);
+  rGrid();render();onTimeChange();
+}
+
+
+// ── LANG ──────────────────────────────────────────────────────────────────
+function setLang(l){
+  lang=l;
+  document.getElementById('btnDa').classList.toggle('active',l==='da');
+  document.getElementById('btnEn').classList.toggle('active',l==='en');
+  document.documentElement.lang=l;
+  const t=tr();
+  document.getElementById('siteTitle').textContent=t.siteTitle;
+  document.getElementById('attribution').innerHTML=t.builtBy+' <strong>Ask Hybel</strong> · Adapt &amp; NBRO Running';
+  document.getElementById('howTitle').textContent=t.howTitle;
+  const lblGoalEl=document.getElementById('lblGoal');
+  if(lblGoalEl) lblGoalEl.textContent=t.lblGoal||t.lblDist;
+  // Update dist button labels
+  document.querySelectorAll('.dt').forEach(b=>{
+    const d=DISTS[b.dataset.d];
+    if(d) b.textContent=Array.isArray(d.label)?d.label[l==='en'?1:0]:d.label;
+  });
+  const plEl=document.getElementById('paceLabel');if(plEl)plEl.textContent=t.paceLabel;
+  document.getElementById('lblRaceDay').textContent=t.lblRaceDay;
+  document.getElementById('lblDays').textContent=t.lblDays;
+  const recTitleEl=document.getElementById('recTitle');if(recTitleEl)recTitleEl.textContent=t.recTitle;
+  document.getElementById('rsLbl').textContent=t.rsLbl;
+  document.getElementById('printBtn').textContent=t.printBtn;
+  const calLbl=document.getElementById('calBtnLbl');if(calLbl)calLbl.textContent=t.calBtn||'Download kalender';
+  const updBtn=document.getElementById('updateBtn');
+  if(updBtn&&updBtn.style.display!=='none') updBtn.textContent=t.updateBtn||'Opdater plan';
+  document.getElementById('howContent').innerHTML=t.howContent.map(x=>`<div style="padding:10px 14px;background:#F8F8F7;border-radius:8px;border:1px solid #E8E8E4">${x}</div>`).join('');
+  const mBtn=document.getElementById('matchExpandBtn');
+  if(mBtn&&mBtn.textContent!==t.hideDetails) mBtn.textContent=t.showDetails;
+  const rBtn=document.getElementById('achRec');
+  if(rBtn&&rBtn.textContent!==t.hideDetails) rBtn.textContent=t.showDetails;
+  rGrid();render();onTimeChange();}
+
+// ── DAY TYPE MANAGEMENT ───────────────────────────────────────────────────
+
+function getVariantPool(sessId, dayIdx){
+  // Phase-aware, dist-aware variant pools
+  const weeks=wOut();
+  const phase=calcPhase(weeks);
+  const isTaper=phase==='taper'||phase==='race';
+  const isBase=phase==='base';
+  const isBuild=phase==='build';
+  const da=lang==='da';
+  const ref2=gRef(); const h2=ref2.hmRef;
+  const fg=Math.min(0.05,Math.max(0.003,(weeks||0)*0.003125));
+  const qz=(f)=>({lo:Math.round(h2*f),hi:Math.round(h2*f*(1+fg))});
+  const rz=(a,b)=>({lo:Math.round(h2*a),hi:Math.round(h2*b)});
+
+  // Helper shorthands
+  const d=curDist;
+  function p(da_str, en_str){return da?da_str:en_str;}
+
+  /* ─── EASY / RECOVERY ─────────────────────────────────────────── */
+  const easyVariants={
+    '5k':[
+      {title:p('Rolig løbetur','Easy run'),blok:p('Zone 2, samtalevenlig','Zone 2, conversational pace'),zone:rz(1.29,1.42)},
+      {title:p('Restitutionsjogging','Recovery jog'),blok:p('Meget let — aktiv restitution','Very easy — active recovery'),zone:rz(1.29,1.42)},
+      {title:p('Bakkejogging','Hilly easy run'),blok:p('Blide bakker, zone 2','Gentle hills, zone 2'),zone:rz(1.29,1.42)},
+      {title:p('Progression-start','Easy build'),blok:p('Start zone 2, slut i tempofølelse','Start zone 2, finish at tempo feel'),zone:rz(1.29,1.42)},
+    ],
+    '10k':[
+      {title:p('Rolig løbetur','Easy run'),blok:p('Zone 2, samtalevenlig','Zone 2, conversational pace'),zone:rz(1.29,1.42)},
+      {title:p('Restitutionsjogging','Recovery jog'),blok:p('Meget let — aktiv restitution','Very easy — active recovery'),zone:rz(1.29,1.42)},
+      {title:p('Let bakkeløb','Easy hilly run'),blok:p('Blide bakker, zone 2','Gentle hills, zone 2'),zone:rz(1.29,1.42)},
+      {title:p('Aerob langsom tur','Aerobic easy'),blok:p('Lav puls, lang og rolig','Low HR, long and easy'),zone:rz(1.29,1.42)},
+    ],
+    'hm':[
+      {title:p('Rolig løbetur','Easy run'),blok:p('Zone 2, samtalevenlig','Zone 2, conversational pace'),zone:rz(1.29,1.42)},
+      {title:p('Restitutionsjogging','Recovery jog'),blok:p('Meget let — aktiv restitution','Very easy — active recovery'),zone:rz(1.29,1.42)},
+      {title:p('Strides-afslutning','Strides finish'),blok:p('Zone 2 + 4–6 × 20 sek strides','Zone 2 + 4–6 × 20 sec strides'),zone:rz(1.29,1.42)},
+      {title:p('Aerob opbygning','Aerobic build'),blok:p('Start zone 2, slut i HM-følelse','Start zone 2, finish at HM feel'),zone:rz(1.29,1.42)},
+    ],
+    'm':[
+      {title:p('Rolig løbetur','Easy run'),blok:p('Zone 2, samtalevenlig','Zone 2, conversational pace'),zone:rz(1.29,1.42)},
+      {title:p('Restitutionsjogging','Recovery jog'),blok:p('Meget let — aktiv restitution','Very easy — active recovery'),zone:rz(1.29,1.42)},
+      {title:p('Let M-pace-tune','Easy M-pace tune'),blok:p('Zone 2 + 2–3 km i M-pace','Zone 2 + 2–3km at M pace'),zone:rz(1.29,1.42)},
+      {title:p('Strides-afslutning','Strides finish'),blok:p('Zone 2 + 4 × 20 sek strides','Zone 2 + 4 × 20 sec strides'),zone:rz(1.29,1.42)},
+    ],
+  };
+
+  /* ─── INTERVALS ───────────────────────────────────────────────── */
+  const intVariants={
+    '5k':[
+      {title:p('Korte drag — 400 m','Short reps 400m'),blok:p('8 × 400 m (200 m pause)','8 × 400m (200m jog)'),zone:rz(1.29,1.42)},
+      {title:p('300 m drag','300m reps'),blok:p('10 × 300 m (200 m pause)','10 × 300m (200m jog)'),zone:rz(1.29,1.42)},
+      {title:p('Pyramide 200–600 m','Pyramid 200–600m'),blok:p('200-400-600-400-200 m (200 m pause)','200-400-600-400-200m (200m jog)'),zone:rz(1.29,1.42)},
+      {title:p('600 m drag','600m reps'),blok:p('6 × 600 m (300 m pause)','6 × 600m (300m jog)'),zone:rz(1.29,1.42)},
+      {title:p('800 m drag','800m reps'),blok:p('5 × 800 m (400 m pause)','5 × 800m (400m jog)'),zone:rz(1.29,1.42)},
+      {title:p('Stigende drag','Build reps'),blok:p('200-400-600-800-600-400-200 m','200-400-600-800-600-400-200m'),zone:rz(1.29,1.42)},
+    ],
+    '10k':[
+      {title:p('Kilometer-drag','1km reps'),blok:p('6 × 1 km (400 m pause)','6 × 1km (400m jog)'),zone:rz(1.29,1.42)},
+      {title:p('800 m intervaller','800m intervals'),blok:p('8 × 800 m (400 m pause)','8 × 800m (400m jog)'),zone:rz(1.29,1.42)},
+      {title:p('Pyramide 400–1200 m','Pyramid 400–1200m'),blok:p('400-800-1200-800-400 m','400-800-1200-800-400m'),zone:rz(1.29,1.42)},
+      {title:p('Cruise-drag 1,5 km','Cruise 1.5km'),blok:p('4 × 1,5 km (600 m pause)','4 × 1.5km (600m jog)'),zone:rz(1.29,1.42)},
+      {title:p('1 km + 400 m sæt','1km + 400m sets'),blok:p('4 × (1 km + 400 m) (400 m pause)','4 × (1km + 400m) (400m jog)'),zone:rz(1.29,1.42)},
+      {title:p('2 km drag','2km reps'),blok:p('4 × 2 km (800 m pause)','4 × 2km (800m jog)'),zone:rz(1.29,1.42)},
+    ],
+    'hm':[
+      {title:p('HM-pace 2 km blokke','HM pace 2km'),blok:p('4 × 2 km i HM-pace (800 m pause)','4 × 2km at HM pace (800m jog)'),zone:rz(1.29,1.42)},
+      {title:p('HM-pace 3 km blokke','HM pace 3km'),blok:p('3 × 3 km i HM-pace (1 km pause)','3 × 3km at HM pace (1km jog)'),zone:rz(1.29,1.42)},
+      {title:p('Tempodrag 1 km','Tempo 1km reps'),blok:p('5 × 1 km i tempopace (500 m pause)','5 × 1km at tempo (500m jog)'),zone:rz(1.29,1.42)},
+      {title:p('Stigende 1–3 km','Build 1–3km'),blok:p('1-2-3-2-1 km (800 m pause)','1-2-3-2-1km (800m jog)'),zone:rz(1.29,1.42)},
+      {title:p('Race-pace 5 km blok','Race-pace 5km'),blok:p('1 × 5 km i HM-pace','1 × 5km at HM pace'),zone:rz(1.29,1.42)},
+      {title:p('Cruise-drag 2 km','Cruise 2km reps'),blok:p('4 × 2 km cruise-pace (600 m)','4 × 2km cruise pace (600m jog)'),zone:rz(1.29,1.42)},
+    ],
+    'm':[
+      {title:p('M-pace 3 km blokke','M-pace 3km'),blok:p('4 × 3 km i M-pace (1 km pause)','4 × 3km at M pace (1km jog)'),zone:rz(1.29,1.42)},
+      {title:p('M-pace 5 km blokke','M-pace 5km'),blok:p('2 × 5 km i M-pace (1 km pause)','2 × 5km at M pace (1km jog)'),zone:rz(1.29,1.42)},
+      {title:p('Tempodrag 2 km','Tempo 2km reps'),blok:p('4 × 2 km i tempopace (1 km pause)','4 × 2km at tempo (1km jog)'),zone:rz(1.29,1.42)},
+      {title:p('Faldende M-pace','Descending M-pace'),blok:p('3-4-5 km i M-pace (800 m pause)','3-4-5km at M pace (800m jog)'),zone:rz(1.29,1.42)},
+      {title:p('1+1 km sæt','1+1km sets'),blok:p('5 × (1 km tempo + 1 km M-pace)','5 × (1km tempo + 1km M pace)'),zone:rz(1.29,1.42)},
+      {title:p('M-pace 2 km blokke','M-pace 2km'),blok:p('5 × 2 km i M-pace (800 m pause)','5 × 2km at M pace (800m jog)'),zone:rz(1.29,1.42)},
+    ],
+  };
+
+  /* ─── TEMPO ───────────────────────────────────────────────────── */
+  const tempoVariants={
+    '5k':[
+      {title:p('Tempopace 3 km','Tempo 3km'),               blok:p('3 km i tempopace','3km at tempo pace')},
+      {title:p('2 × 2 km tempo','2 × 2km tempo'),           blok:p('2 × 2 km i tempopace (800 m pause)','2 × 2km at tempo (800m jog)')},
+      {title:p('Stigende 4 km','Build 4km'),                blok:p('4 km stigende til 5K-pace','4km building to 5K pace')},
+      {title:p('3 × 1,5 km tempo','3 × 1.5km tempo'),      blok:p('3 × 1,5 km i tempopace (600 m pause)','3 × 1.5km at tempo (600m jog)')},
+      {title:p('Fartlek 5K','5K fartlek'),                  blok:p('6 × 2 min hård / 2 min rolig','6 × 2 min hard / 2 min easy')},
+      {title:p('4 km faldende pace','4km descending'),      blok:p('4 km — hvert km lidt hurtigere','4km — each km slightly faster')},
+    ],
+    '10k':[
+      {title:p('Tempopace 4 km','Tempo 4km'),               blok:p('4 km i tempopace','4km at tempo pace')},
+      {title:p('2 × 3 km tempo','2 × 3km tempo'),           blok:p('2 × 3 km i tempopace (1 km pause)','2 × 3km at tempo (1km jog)')},
+      {title:p('Stigende 5 km','Build 5km'),                blok:p('5 km stigende til 10K-pace','5km building to 10K pace')},
+      {title:p('3 × 2 km tempo','3 × 2km tempo'),           blok:p('3 × 2 km i tempopace (800 m pause)','3 × 2km at tempo (800m jog)')},
+      {title:p('Tempo 6 km','Tempo 6km'),                   blok:p('6 km i tempopace','6km at tempo pace')},
+      {title:p('Fartlek 10K','10K fartlek'),                blok:p('8 × 2 min hård / 2 min rolig','8 × 2 min hard / 2 min easy')},
+    ],
+    'hm':[
+      {title:p('Tempopace 5 km','Tempo 5km'),               blok:p('5 km i tempopace','5km at tempo pace')},
+      {title:p('2 × 4 km tempo','2 × 4km tempo'),           blok:p('2 × 4 km i tempopace (1 km pause)','2 × 4km at tempo (1km jog)')},
+      {title:p('Stigende 6 km','Build 6km to HM'),          blok:p('6 km stigende til HM-pace','6km building to HM pace')},
+      {title:p('3 × 3 km tempo','3 × 3km tempo'),           blok:p('3 × 3 km i tempopace (1 km pause)','3 × 3km at tempo (1km jog)')},
+      {title:p('Tempopace 7 km','Tempo 7km'),               blok:p('7 km i tempopace','7km at tempo pace')},
+      {title:p('Fartlek HM','HM fartlek'),                  blok:p('8 × 3 min hård / 2 min rolig','8 × 3 min hard / 2 min easy')},
+    ],
+    'm':[
+      {title:p('M-pace 6 km','M-pace 6km'),                 blok:p('6 km i M-pace','6km at marathon pace')},
+      {title:p('2 × 5 km M-pace','2 × 5km M-pace'),        blok:p('2 × 5 km i M-pace (1 km pause)','2 × 5km at M pace (1km jog)')},
+      {title:p('Stigende 8 km til M-pace','Build 8km'),     blok:p('8 km stigende til M-pace','8km building to M pace')},
+      {title:p('M-pace 8 km','M-pace 8km'),                 blok:p('8 km i M-pace','8km at marathon pace')},
+      {title:p('3 × 4 km M-pace','3 × 4km M-pace'),        blok:p('3 × 4 km i M-pace (1 km pause)','3 × 4km at M pace (1km jog)')},
+      {title:p('Fartlek M-pace','M-pace fartlek'),          blok:p('10 × 2 min M-pace / 2 min rolig','10 × 2 min M-pace / 2 min easy')},
+    ],
+  };
+
+  /* ─── VO2MAX ──────────────────────────────────────────────────── */
+  const vo2Variants={
+    '5k':[
+      {title:p('30/30 intervaller','30/30 intervals'),      blok:p('12 × 30 sek (30 sek pause)','12 × 30 sec (30 sec jog)')},
+      {title:p('200 m VO2-drag','200m VO2 reps'),           blok:p('10 × 200 m (200 m pause)','10 × 200m (200m jog)')},
+      {title:p('300 m VO2-drag','300m VO2 reps'),           blok:p('8 × 300 m (200 m pause)','8 × 300m (200m jog)')},
+      {title:p('Bakkesprints','Hill sprints'),              blok:p('8 × 60 sek op bakke (gå ned)','8 × 60 sec uphill (walk down)')},
+      {title:p('400 m VO2-drag','400m VO2 reps'),           blok:p('6 × 400 m (400 m pause)','6 × 400m (400m jog)')},
+      {title:p('Pyramide 100–400 m','Pyramid 100–400m'),   blok:p('100-200-300-400-300-200-100 m','100-200-300-400-300-200-100m')},
+    ],
+    '10k':[
+      {title:p('400 m VO2-drag','400m VO2 reps'),           blok:p('8 × 400 m (400 m pause)','8 × 400m (400m jog)')},
+      {title:p('600 m VO2-drag','600m VO2 reps'),           blok:p('6 × 600 m (400 m pause)','6 × 600m (400m jog)')},
+      {title:p('30/30 intervaller','30/30 intervals'),      blok:p('15 × 30 sek (30 sek pause)','15 × 30 sec (30 sec jog)')},
+      {title:p('Bakkesprints','Hill sprints'),              blok:p('10 × 60 sek op bakke (gå ned)','10 × 60 sec uphill (walk down)')},
+      {title:p('800 m VO2-drag','800m VO2 reps'),           blok:p('5 × 800 m (400 m pause)','5 × 800m (400m jog)')},
+      {title:p('Pyramide 200–600 m','Pyramid 200–600m'),   blok:p('200-400-600-400-200 m','200-400-600-400-200m')},
+    ],
+    'hm':[
+      {title:p('800 m VO2-drag','800m VO2 reps'),           blok:p('6 × 800 m (400 m pause)','6 × 800m (400m jog)')},
+      {title:p('1 km VO2-drag','1km VO2 reps'),             blok:p('5 × 1 km (500 m pause)','5 × 1km (500m jog)')},
+      {title:p('400 m sprint','400m sprints'),              blok:p('10 × 400 m (400 m pause)','10 × 400m (400m jog)')},
+      {title:p('30/30 intervaller','30/30 intervals'),      blok:p('15 × 30 sek (30 sek pause)','15 × 30 sec (30 sec jog)')},
+      {title:p('600 m VO2-drag','600m VO2 reps'),           blok:p('7 × 600 m (400 m pause)','7 × 600m (400m jog)')},
+      {title:p('Bakkesprints','Hill sprints'),              blok:p('10 × 60 sek op bakke (gå ned)','10 × 60 sec uphill (walk down)')},
+    ],
+    'm':[
+      {title:p('1 km VO2-drag','1km VO2 reps'),             blok:p('5 × 1 km (600 m pause)','5 × 1km (600m jog)')},
+      {title:p('800 m VO2-drag','800m VO2 reps'),           blok:p('6 × 800 m (400 m pause)','6 × 800m (400m jog)')},
+      {title:p('30/30 intervaller','30/30 intervals'),      blok:p('12 × 30 sek (30 sek pause)','12 × 30 sec (30 sec jog)')},
+      {title:p('400 m sprint','400m sprints'),              blok:p('8 × 400 m (400 m pause)','8 × 400m (400m jog)')},
+      {title:p('Bakkesprints','Hill sprints'),              blok:p('8 × 60 sek op bakke (gå ned)','8 × 60 sec uphill (walk down)')},
+      {title:p('600 m VO2-drag','600m VO2 reps'),           blok:p('6 × 600 m (400 m pause)','6 × 600m (400m jog)')},
+    ],
+  };
+
+  /* ─── RACE PACE ───────────────────────────────────────────────── */
+  const raceVariants={
+    '5k':[
+      {title:p('3 km race-pace','3km race pace'),           blok:p('3 km i 5K-pace','3km at 5K pace')},
+      {title:p('2 × 2 km race-pace','2 × 2km race pace'),  blok:p('2 × 2 km i 5K-pace (3 min pause)','2 × 2km at 5K pace (3 min jog)')},
+      {title:p('5 × 1 km race-pace','5 × 1km race pace'),  blok:p('5 × 1 km i 5K-pace (2 min pause)','5 × 1km at 5K pace (2 min jog)')},
+      {title:p('Stigende til 5K-pace','Build to 5K pace'), blok:p('4 km stigende til 5K-pace','4km building to 5K pace')},
+      {title:p('Fartlek 5K-pace','5K pace fartlek'),       blok:p('6 × 1 min i 5K-pace / 2 min rolig','6 × 1 min at 5K pace / 2 min easy')},
+      {title:p('4 km race-pace','4km race pace'),           blok:p('4 km i 5K-pace','4km at 5K pace')},
+    ],
+    '10k':[
+      {title:p('5 km race-pace','5km race pace'),           blok:p('5 km i 10K-pace','5km at 10K pace')},
+      {title:p('3 × 2 km race-pace','3 × 2km race pace'),  blok:p('3 × 2 km i 10K-pace (2 min pause)','3 × 2km at 10K pace (2 min jog)')},
+      {title:p('2 × 3 km race-pace','2 × 3km race pace'),  blok:p('2 × 3 km i 10K-pace (3 min pause)','2 × 3km at 10K pace (3 min jog)')},
+      {title:p('Stigende til 10K-pace','Build to 10K pace'),blok:p('6 km stigende til 10K-pace','6km building to 10K pace')},
+      {title:p('Fartlek 10K-pace','10K pace fartlek'),     blok:p('8 × 1 min i 10K-pace / 1 min rolig','8 × 1 min at 10K pace / 1 min easy')},
+      {title:p('7 km race-pace','7km race pace'),           blok:p('7 km i 10K-pace','7km at 10K pace')},
+    ],
+    'hm':[
+      {title:p('HM-pace 5 km','HM pace 5km'),               blok:p('5 km i HM-pace','5km at HM pace')},
+      {title:p('3 × 3 km HM-pace','3 × 3km HM pace'),       blok:p('3 × 3 km i HM-pace (2 min pause)','3 × 3km at HM pace (2 min jog)')},
+      {title:p('2 × 5 km HM-pace','2 × 5km HM pace'),       blok:p('2 × 5 km i HM-pace (3 min pause)','2 × 5km at HM pace (3 min jog)')},
+      {title:p('Stigende til HM-pace','Build to HM pace'),  blok:p('8 km stigende til HM-pace','8km building to HM pace')},
+      {title:p('HM-pace 8 km','HM pace 8km'),               blok:p('8 km i HM-pace','8km at HM pace')},
+      {title:p('4 × 2 km HM-pace','4 × 2km HM pace'),       blok:p('4 × 2 km i HM-pace (90 sek pause)','4 × 2km at HM pace (90 sec jog)')},
+    ],
+    'm':[
+      {title:p('M-pace 10 km','M-pace 10km'),               blok:p('10 km i M-pace','10km at M pace')},
+      {title:p('3 × 5 km M-pace','3 × 5km M-pace'),        blok:p('3 × 5 km i M-pace (2 min pause)','3 × 5km at M pace (2 min jog)')},
+      {title:p('2 × 8 km M-pace','2 × 8km M-pace'),        blok:p('2 × 8 km i M-pace (3 min pause)','2 × 8km at M pace (3 min jog)')},
+      {title:p('Stigende til M-pace','Build to M-pace'),    blok:p('14 km stigende til M-pace','14km building to M pace')},
+      {title:p('M-pace 12 km','M-pace 12km'),               blok:p('12 km i M-pace','12km at M pace')},
+      {title:p('4 × 4 km M-pace','4 × 4km M-pace'),        blok:p('4 × 4 km i M-pace (2 min pause)','4 × 4km at M pace (2 min jog)')},
+    ],
+  };
+
+  /* ─── LONG RUN ────────────────────────────────────────────────── */
+  const longVariants={
+    '5k':[
+      {title:p('Rolig langtur','Easy long run'),             blok:p('Hele løbet i zone 2','All at zone 2')},
+      {title:p('Stigende langtur','Progressive long run'),   blok:p('Start zone 2, slut i tempofølelse','Start zone 2, finish at tempo feel')},
+      {title:p('Langtur + race-finish','Long + race finish'),blok:p('Sidst 2 km i 5K-pace','Last 2km at 5K pace')},
+      {title:p('Fartlek langtur','Fartlek long run'),        blok:p('Zone 2 med 4 × 3 min hurtigt','Zone 2 with 4 × 3 min fast')},
+      {title:p('Bakke-langtur','Hilly long run'),            blok:p('Søg bakker, zone 2','Seek hills, zone 2')},
+      {title:p('Negative split','Negative split'),           blok:p('2. halvdel hurtigere end 1.','2nd half faster than 1st')},
+    ],
+    '10k':[
+      {title:p('Rolig langtur','Easy long run'),             blok:p('Hele løbet i zone 2','All at zone 2')},
+      {title:p('Stigende langtur','Progressive long run'),   blok:p('Start zone 2, slut i 10K-følelse','Start zone 2, finish at 10K feel')},
+      {title:p('Langtur + 10K-finish','Long + 10K finish'), blok:p('Sidst 3 km i 10K-pace','Last 3km at 10K pace')},
+      {title:p('Fartlek langtur','Fartlek long run'),        blok:p('Zone 2 med 5 × 4 min hurtigt','Zone 2 with 5 × 4 min fast')},
+      {title:p('Bakke-langtur','Hilly long run'),            blok:p('Søg bakker, zone 2','Seek hills, zone 2')},
+      {title:p('Negative split','Negative split'),           blok:p('2. halvdel hurtigere end 1.','2nd half faster than 1st')},
+    ],
+    'hm':[
+      {title:p('Rolig langtur','Easy long run'),             blok:p('Hele løbet i zone 2','All at zone 2')},
+      {title:p('Stigende langtur','Progressive long run'),   blok:p('Start zone 2, slut i HM-pace','Start zone 2, finish at HM pace')},
+      {title:p('Langtur + HM-finish','Long + HM finish'),   blok:p('Sidst 5 km i HM-pace','Last 5km at HM pace')},
+      {title:p('Marathon-tempo langtur','Marathon pace long'),blok:p('Hele løbet i M-pace','All at marathon pace')},
+      {title:p('Fartlek langtur','Fartlek long run'),        blok:p('Zone 2 med 6 × 4 min i HM-pace','Zone 2 with 6 × 4 min at HM pace')},
+      {title:p('Negative split','Negative split'),           blok:p('2. halvdel i HM-pace','2nd half at HM pace')},
+    ],
+    'm':[
+      {title:p('Rolig langtur','Easy long run'),             blok:p('Hele løbet i zone 2','All at zone 2')},
+      {title:p('Stigende langtur','Progressive long run'),   blok:p('Start zone 2, slut i M-pace','Start zone 2, finish at M pace')},
+      {title:p('M-pace langtur','M-pace long run'),          blok:p('Midterste 15–20 km i M-pace','Middle 15–20km at M pace')},
+      {title:p('Langtur + M-pace finish','Long + M-pace finish'),blok:p('Sidst 8 km i M-pace','Last 8km at M pace')},
+      {title:p('Back-to-back langtur','Back-to-back long'),  blok:p('Trætte ben — aktiv restitution','Tired legs — active recovery')},
+      {title:p('Negative split','Negative split'),           blok:p('2. halvdel i M-pace','2nd half at M pace')},
+    ],
+  };
+
+  // Phase-aware: in taper, recommend shorter/easier variants first
+  function phaseSort(pool){
+    if(!pool||!pool.length) return pool;
+    if(!isTaper) return pool;
+    const easyFirst=['Rolig','Easy','Restitution','Recovery','Negative'];
+    return [...pool].sort((a,b)=>{
+      const aEasy=easyFirst.some(k=>a.title.includes(k));
+      const bEasy=easyFirst.some(k=>b.title.includes(k));
+      return aEasy===bEasy?0:aEasy?-1:1;
+    });
+  }
+
+  // Inject zone + note into each variant so bSess gets correct paces
+  // Zone by session type — variants within a type can override
+  const zoneMap={
+    easy: rz(1.29,1.42), int: qz(0.93), tempo: qz(1.04),
+    vo2: qz(0.87), race: qz(1.00), long: rz(1.29,1.42),
+    rest_run: rz(1.29,1.42),
+  };
+  // Some tempo/race variants run at different efforts — tag them
+  function variantZone(sessId, v){
+    const t=v.title||'';
+    if(sessId==='tempo'){
+      if(t.includes('HM-pace')||t.includes('HM pace')) return qz(1.00);
+      if(t.includes('M-pace')||t.includes('M pace')) return qz(1.06);
+      if(t.includes('Stigende')||t.includes('Build')) return qz(1.02);
+      if(t.includes('Fartlek')) return qz(0.97);
+    }
+    if(sessId==='int'){
+      if(t.includes('Cruise')||t.includes('cruise')) return qz(1.02);
+      if(t.includes('Tempodrag')||t.includes('Tempo 1km')) return qz(1.04);
+      if(t.includes('HM-pace')||t.includes('HM pace')) return qz(1.00);
+    }
+    if(sessId==='race'){
+      if(d==='m') return qz(1.06);
+      if(d==='5k') return qz(0.93); // 5K pace ≈ interval effort
+      if(d==='10k') return qz(0.97); // 10K pace between threshold and HM
+    }
+    return zoneMap[sessId]||qz(1.04);
+  }
+
+  function withZone(pool, sessId){
+    return (pool||[]).map(v=>({...v, zone:v.zone||variantZone(sessId,v), note:v.note||v.blok||''}));
+  }
+
+  if(sessId==='easy'||sessId==='rest_run') return withZone(phaseSort(easyVariants[d]),sessId);
+  if(sessId==='int') return withZone(phaseSort(intVariants[d]),sessId);
+  if(sessId==='tempo') return withZone(phaseSort(tempoVariants[d]),sessId);
+  if(sessId==='vo2') return withZone(phaseSort(vo2Variants[d]),sessId);
+  if(sessId==='race') return withZone(phaseSort(raceVariants[d]),sessId);
+  if(sessId==='long') return withZone(phaseSort(longVariants[d]),sessId);
+  return [];
+}
+function calcPkKm(){return REQS[curDist](gRef().raw).pk;}
+
+function setVariant(dayIdx, variantIdx){
+  dayVariantOverride[dayIdx]=parseInt(variantIdx);
+  render();
+  // rGrid re-renders the variant picker with the new selection highlighted
+  rGrid();
+}
+function setDayKm(dayIdx, newVal, defaultKm){
+  const n=parseFloat(newVal);
+  if(isNaN(n)||n<=0){delete dayKmOverride[dayIdx];render();return;}
+  const kmVal=lang==='en'?Math.round(n/0.621371*10)/10:n;
+  if(Math.abs(kmVal-defaultKm)<0.05){
+    delete dayKmOverride[dayIdx];
+  } else {
+    dayKmOverride[dayIdx]=kmVal;
+    manualKmMode=true; // switch to manual — other days won't auto-adjust
+  }
+  render();
+}
+function resetDayKm(dayIdx){
+  delete dayKmOverride[dayIdx];
+  if(Object.keys(dayKmOverride).length===0) manualKmMode=false;
+  render();
+}
+function resetAllKm(){
+  dayKmOverride={};
+  manualKmMode=false;
+  render();
+}
+function cycleT(i){
+  const o=['rest','run','cardio','strength'];
+  dayTypes[i]=o[(o.indexOf(dayTypes[i])+1)%4];
+  if(dayTypes[i]==='run'&&!daySessions[i]) daySessions[i]=autoSess(i);
+  if(dayTypes[i]!=='run'){ delete daySessions[i]; delete dayKmOverride[i]; delete dayVariantOverride[i]; }
+  rGrid();render();
+}
+function autoSess(i){
+  const run=dayTypes.map((tp,j)=>tp==='run'?j:-1).filter(j=>j>=0).sort((a,b)=>a-b);
+  const p=run.indexOf(i),n=run.length;
+  if(p===n-1)return'long';if(n<=2)return p===0?'tempo':'long';return p===0?'tempo':'easy';
+}
+
+// ── WEEK GRID ─────────────────────────────────────────────────────────────
+function rGrid(){
+  const t=tr();
+  const TYPE_CLS={rest:'rest-on',run:'run-on',cardio:'cardio-on',strength:'strength-on'};
+  // We need wKm and phase to show default km — get from current state
+  const _ref=gRef(),_w=wOut(),_ph=calcPhase(_w),_req=REQS[curDist](_ref.raw),_pk=_req.pk,_wKm=calcWeekKm(_pk,_w);
+  const _runCount=dayTypes.filter(tp=>tp==='run').length;
+  const todayIdx=(new Date().getDay()+6)%7; // Mon=0, Tue=1, ..., Sun=6
+  document.getElementById('weekGrid').innerHTML=t.dayNames.map((d,i)=>{
+    const tp=dayTypes[i];
+    const cls=TYPE_CLS[tp]||'rest-on';
+    const isToday=i===todayIdx;
+    let inner='';
+    if(tp==='run'){
+      const cur=daySessions[i]||'easy';
+      const defKm=bSess(cur,_ref.hmRef,_wKm,_ph,_w,_runCount,getWN(new Date()),i).km;
+      const defDisp=kmToUnit(defKm);
+      const overrideDisp=dayKmOverride[i]!=null?kmToUnit(dayKmOverride[i]):null;
+      const dispVal=overrideDisp!=null?overrideDisp:defDisp;
+      const isOverridden=overrideDisp!=null;
+      // Variant picker for sessions that have multiple options
+      const hasVariants=['int','tempo','vo2','race','long'].includes(cur);
+      let varPicker='';
+      if(hasVariants){
+        const pool=getVariantPool(cur,i);
+        if(pool&&pool.length>1){
+          const baseRot=(getWN(new Date())||0)%pool.length;
+          const curVar=dayVariantOverride[i]!=null?dayVariantOverride[i]:baseRot;
+          varPicker=`<select class="ss var-select" style="margin-top:2px;font-size:9px;color:var(--muted)" onchange="setVariant(${i},this.value)">${pool.map((v,vi)=>`<option value="${vi}"${vi===curVar?' selected':''}>${v.title.slice(0,28)}</option>`).join('')}</select>`;
+        }
+      }
+      inner=`<select class="ss" onchange="daySessions[${i}]=this.value;delete dayKmOverride[${i}];delete dayVariantOverride[${i}];render();rGrid()">${t.sessTypes.map(s=>`<option value="${s.id}"${cur===s.id?' selected':''}>${s.label}</option>`).join('')}</select>
+        ${varPicker}
+        <div class="day-km-wrap">
+          <input class="pck-input${isOverridden?' overridden':''}" type="number" min="1" max="99" step="0.5"
+            value="${dispVal}"
+            title="${lang==='da'?'Anbefalet: '+defDisp+' '+distUnit():'Recommended: '+defDisp+' '+distUnit()}"
+            onchange="setDayKm(${i},this.value,${defKm})"
+            onfocus="this.select()">
+          <span class="pck-unit">${distUnit()}</span>
+          ${isOverridden?`<button class="pck-reset" onclick="event.stopPropagation();resetDayKm(${i})" title="${lang==='da'?'Nulstil':'Reset'}">↺</button>`:''}
+        </div>`;
+    }
+    return`<div class="dc${isToday?' dc-today':''}" style="${isToday?'border-color:var(--orange);border-width:1.5px;':''}"><div class="dn">${d}${isToday?'<span class="today-dot"></span>':''}</div><button class="dtb ${cls}" onclick="cycleT(${i})">${t.typeLabels[tp]||tp}</button>${inner}</div>`;
+  }).join('');
+}
+
+function bSess(id,hmRef,wKm,phase,weeks,runDays,weekNum,dayIdx){
+  const t=tr();
+  const sl=t.stepLabels,sd=t.sessData;
+  const isTaper=phase==='taper'||phase==='race';
+  // Form gap: how much slower than goal you realistically are now
+  // ~0.85% per week remaining — 16w out = 13.6% off goal, 2w = 1.7%, race week = 1%
+  // lo = goal pace zone (fixed — where you're heading)
+  // hi = lo * (1 + formGap) — your current realistic pace, shrinks toward lo
+  const weeksNum=weeks||0;
+  const formGap=Math.min(0.05,Math.max(0.003,weeksNum*0.003125)); // 5% at 16w, ~0.3% at race
+  // Quality sessions: lo=goal zone target, hi=lo*(1+formGap)
+  const qrng=(flo)=>{const lo=Math.round(hmRef*flo);return{lo,hi:Math.round(lo*(1+formGap))};};
+  // Easy/long: fixed zone — both ends scale with hmRef, no form gap needed
+  const rng=(flo,fhi)=>({lo:Math.round(hmRef*flo),hi:Math.round(hmRef*fhi)});
+  const rd=Math.max(2,Math.min(6,runDays||4));
+  const volScale=Math.min(1.35,Math.max(0.70,4/rd));
+  const rep={base:'5',build:'6',taper:'4',race:'3'}[phase]||'4';
+  const rb={base:'5',build:'8',taper:'4',race:'3'}[phase]||'5';
+  const W=2,C=1,R=0.4;
+  const du=distUnit();
+  // Rotation index — deterministic per week, cycles through variants
+  const rot=(weekNum||0)%4; // 0-3 rotation
+  const isHM=curDist==='hm';
+  const isM=curDist==='m';
+  const is5k=curDist==='5k';
+  const is10k=curDist==='10k';
+
+  // Distance-specific interval variants — varied km/m-based sessions, rotate by week
+  const intVariants={
+    '5k':[
+      {title:lang==='da'?'Korte drag — 400 m':'Short reps 400m',      blok:lang==='da'?'8 × 400 m (200 m pause)':'8 × 400m (200m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'300 m drag':'300m reps',                    blok:lang==='da'?'10 × 300 m (200 m pause)':'10 × 300m (200m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Pyramide 200–400–600 m':'Pyramid 200–400–600m', blok:lang==='da'?'200-400-600-400-200 m (200 m pause)':'200-400-600-400-200m (200m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'600 m drag':'600m reps',                    blok:lang==='da'?'6 × 600 m (300 m pause)':'6 × 600m (300m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'800 m drag — fart':'800m reps',             blok:lang==='da'?'5 × 800 m (400 m pause)':'5 × 800m (400m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Stigende drag 200–800 m':'Build reps 200–800m', blok:lang==='da'?'200-400-600-800-600-400-200 m':'200-400-600-800-600-400-200m', zone:qrng(0.93)},
+    ],
+    '10k':[
+      {title:lang==='da'?'Kilometer-drag':'1km reps',                 blok:lang==='da'?'6 × 1 km (400 m pause)':'6 × 1km (400m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'800 m intervaller':'800m intervals',        blok:lang==='da'?'8 × 800 m (400 m pause)':'8 × 800m (400m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Pyramide 400–1200 m':'Pyramid 400–1200m',   blok:lang==='da'?'400-800-1200-800-400 m (400 m pause)':'400-800-1200-800-400m (400m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Cruise-drag 1,5 km':'Cruise 1.5km',         blok:lang==='da'?'4 × 1,5 km (600 m pause)':'4 × 1.5km (600m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'1 km + 400 m sæt':'1km + 400m sets',       blok:lang==='da'?'4 × (1 km + 400 m) (400 m pause)':'4 × (1km + 400m) (400m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'2 km drag':'2km reps',                      blok:lang==='da'?'4 × 2 km (800 m pause)':'4 × 2km (800m jog)', zone:qrng(0.93)},
+    ],
+    'hm':[
+      {title:lang==='da'?'HM-pace-blokke 2 km':'HM pace 2km blocks',  blok:lang==='da'?'4 × 2 km i HM-pace (800 m pause)':'4 × 2km at HM pace (800m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'HM-pace-blokke 3 km':'HM pace 3km blocks',  blok:lang==='da'?'3 × 3 km i HM-pace (1 km pause)':'3 × 3km at HM pace (1km jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Tempodrag 1 km':'Tempo 1km reps',           blok:lang==='da'?'5 × 1 km i tempopace (500 m pause)':'5 × 1km at tempo (500m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Stigende 1–3 km':'Build 1–3km',             blok:lang==='da'?'1-2-3-2-1 km (800 m pause)':'1-2-3-2-1km (800m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Race-pace 5 km blok':'Race-pace 5km block', blok:lang==='da'?'1 × 5 km i HM-pace':'1 × 5km at HM pace', zone:qrng(0.93)},
+      {title:lang==='da'?'Cruise-drag 2 km':'Cruise 2km reps',        blok:lang==='da'?'4 × 2 km i cruise-pace (600 m pause)':'4 × 2km cruise pace (600m jog)', zone:qrng(0.93)},
+    ],
+    'm':[
+      {title:lang==='da'?'M-pace-blokke 3 km':'M-pace 3km blocks',    blok:lang==='da'?'4 × 3 km i M-pace (1 km pause)':'4 × 3km at M pace (1km jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'M-pace-blokke 5 km':'M-pace 5km blocks',    blok:lang==='da'?'2 × 5 km i M-pace (1 km pause)':'2 × 5km at M pace (1km jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Tempodrag 2 km':'Tempo 2km reps',           blok:lang==='da'?'4 × 2 km i tempopace (1 km pause)':'4 × 2km at tempo (1km jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'Faldende M-pace':'Descending M-pace',       blok:lang==='da'?'3-4-5 km i M-pace (800 m pause)':'3-4-5km at M pace (800m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'1 km sæt + M-pace':'1km sets + M-pace',     blok:lang==='da'?'5 × (1 km tempo + 1 km M-pace) (500 m pause)':'5 × (1km tempo + 1km M pace) (500m jog)', zone:qrng(0.93)},
+      {title:lang==='da'?'M-pace-blokke 2 km':'M-pace 2km blocks',    blok:lang==='da'?'5 × 2 km i M-pace (800 m pause)':'5 × 2km at M pace (800m jog)', zone:qrng(0.93)},
+    ],
+  };
+
+  // Distance-specific tempo variants — all km-based
+  const tempoVariants={
+    '5k':[
+      {title:lang==='da'?'Tempopace 3 km':'Tempo 3km',           blok:lang==='da'?'3 km i tempopace':'3km at tempo pace', zone:qrng(1.04)},
+      {title:lang==='da'?'2 × 2 km tempo':'2 × 2km tempo',       blok:lang==='da'?'2 × 2 km i tempopace (800 m pause)':'2 × 2km at tempo (800m jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Stigende 4 km':'Build 4km',             blok:lang==='da'?'4 km: start i easy-pace, slut i 5K-pace':'4km: start easy, finish at 5K pace', zone:qrng(1.04)},
+      {title:lang==='da'?'3 × 1,5 km tempo':'3 × 1.5km tempo',   blok:lang==='da'?'3 × 1,5 km i tempopace (600 m pause)':'3 × 1.5km tempo (600m jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Tempopace 2 km':'Tempo 2km',            blok:lang==='da'?'2 km hurtigt, 2 km roligt, 2 km hurtigt':'2km fast, 2km easy, 2km fast', zone:qrng(1.04)},
+      {title:lang==='da'?'4 km faldende pace':'4km descending',   blok:lang==='da'?'4 km med 1 km lettere for hvert km':'4km: each km slightly faster', zone:qrng(1.04)},
+    ],
+    '10k':[
+      {title:lang==='da'?'Tempopace 4 km':'Tempo 4km',            blok:lang==='da'?'4 km i tempopace':'4km at tempo pace', zone:qrng(1.04)},
+      {title:lang==='da'?'2 × 3 km tempo':'2 × 3km tempo',        blok:lang==='da'?'2 × 3 km i tempopace (1 km pause)':'2 × 3km at tempo (1km jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Stigende 5 km':'Build 5km',              blok:lang==='da'?'5 km: start i easy-pace, slut i 10K-pace':'5km: start easy, finish at 10K pace', zone:qrng(1.04)},
+      {title:lang==='da'?'3 × 2 km tempo':'3 × 2km tempo',        blok:lang==='da'?'3 × 2 km i tempopace (800 m pause)':'3 × 2km at tempo (800m jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Tempo 6 km':'Tempo 6km',                 blok:lang==='da'?'6 km i tempopace':'6km at tempo pace', zone:qrng(1.04)},
+      {title:lang==='da'?'Faldende 5 km':'Descending 5km',         blok:lang==='da'?'5 km med hvert km lidt hurtigere':'5km: each km slightly faster', zone:qrng(1.04)},
+    ],
+    'hm':[
+      {title:lang==='da'?'Tempopace 5 km':'Tempo 5km',            blok:lang==='da'?'5 km i tempopace':'5km at tempo pace', zone:qrng(1.04)},
+      {title:lang==='da'?'2 × 4 km tempo':'2 × 4km tempo',        blok:lang==='da'?'2 × 4 km i tempopace (1 km pause)':'2 × 4km at tempo (1km jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Stigende 6 km til HM-pace':'Build 6km to HM pace', blok:lang==='da'?'6 km: start i easy, slut i HM-pace':'6km: start easy, finish at HM pace', zone:qrng(1.04)},
+      {title:lang==='da'?'3 × 3 km tempo':'3 × 3km tempo',        blok:lang==='da'?'3 × 3 km i tempopace (1 km pause)':'3 × 3km at tempo (1km jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Tempopace 7 km':'Tempo 7km',             blok:lang==='da'?'7 km i tempopace':'7km at tempo pace', zone:qrng(1.04)},
+      {title:lang==='da'?'Faldende 6 km':'Descending 6km',         blok:lang==='da'?'6 km: hvert 2 km lidt hurtigere':'6km: every 2km slightly faster', zone:qrng(1.04)},
+    ],
+    'm':[
+      {title:lang==='da'?'M-pace 6 km':'M-pace 6km',               blok:lang==='da'?'6 km i M-pace':'6km at marathon pace', zone:qrng(1.04)},
+      {title:lang==='da'?'2 × 5 km M-pace':'2 × 5km M-pace',       blok:lang==='da'?'2 × 5 km i M-pace (1 km pause)':'2 × 5km at M pace (1km jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Stigende 8 km til M-pace':'Build 8km to M-pace', blok:lang==='da'?'8 km: start i easy, slut i M-pace':'8km: start easy, finish at M pace', zone:qrng(1.04)},
+      {title:lang==='da'?'M-pace 8 km':'M-pace 8km',                blok:lang==='da'?'8 km i M-pace':'8km at marathon pace', zone:qrng(1.04)},
+      {title:lang==='da'?'3 × 4 km M-pace':'3 × 4km M-pace',       blok:lang==='da'?'3 × 4 km i M-pace (1 km pause)':'3 × 4km at M pace (1km jog)', zone:qrng(1.04)},
+      {title:lang==='da'?'Faldende 8 km':'Descending 8km',          blok:lang==='da'?'8 km: hvert 2 km lidt hurtigere':'8km: every 2km slightly faster', zone:qrng(1.04)},
+    ],
+  };
+
+  // Use 6-rotation cycle for auto-rotation, or user-selected variant via dayVariantOverride
+  const baseRot=(weekNum||0)%6;
+  const userVariant=dayIdx!=null?dayVariantOverride[dayIdx]:undefined;
+
+  // Get variant from getVariantPool if user selected one, else use internal pools by rotation
+  // Default zones per session type
+  const defaultZones={int:qrng(0.93),tempo:qrng(1.04),vo2:qrng(0.87),race:qrng(1.00),long:rng(1.29,1.42)};
+  function getActiveVariant(sessId, fallbackPool){
+    if(userVariant!=null){
+      const pool=getVariantPool(sessId, dayIdx);
+      if(pool&&pool.length>0){
+        const v=pool[userVariant%pool.length];
+        // Inject default zone if variant has none (getVariantPool variants have title+blok but no zone)
+        if(!v.zone) v.zone=defaultZones[sessId]||qrng(0.93);
+        if(!v.note) v.note=v.blok||'';
+        return v;
+      }
+    }
+    // Auto-rotation from internal pool
+    return fallbackPool[baseRot%fallbackPool.length];
+  }
+
+  const iv=getActiveVariant('int', intVariants[curDist]);
+  const tv=getActiveVariant('tempo', tempoVariants[curDist]);
+  // vo2, race, long — get variant from pool if override set
+  const vv=getActiveVariant('vo2', [{title:sd.vo2.t,s:sd.vo2.s,blok:'',zone:qrng(0.83)}]);
+  const rv=getActiveVariant('race', [{title:sd.race.t,s:sd.race.s,blok:'',zone:qrng(1.00)}]);
+  const lv=getActiveVariant('long', [{title:sd.long.t,s:isTaper?sd.long.sTaper:sd.long.sNorm,blok:'',zone:null}]);
+
+  
+
+    // Convert blok string distances to miles for EN display
+  function blokStr(s){
+    if(lang!=='en') return s;
+    return s
+      .replace(/\b(\d+(?:[,.]\d+)?)\s*km\b/g,(m,n)=>(Math.round(parseFloat(n.replace(',','.'))*0.621371*10)/10)+' mi')
+      .replace(/\b(\d{3,4})\s*m\b/g,(m,n)=>{const mi=parseInt(n)/1609.34;return mi<0.1?(Math.round(parseInt(n)*0.000621371*100)/100)+' mi':Math.round(mi*100)/100+' mi';});
+  }
+
+  const D={
+    easy:{t:sd.easy.t,s:sd.easy.s,dr:rng(1.29,1.42),km:Math.max(5,Math.round(wKm*.24*volScale)),st:[{l:sl.whole,r:'',rng:rng(1.18,1.32),k:true}]},
+    long:{t:lv.title||sd.long.t,s:lv.s||(isTaper?sd.long.sTaper:sd.long.sNorm),dr:rng(1.29,1.42),km:(()=>{
+      const minLong={'5k':8,'10k':10,'hm':14,'m':18}[curDist];
+      const scaledKm=isTaper?Math.round(wKm*.28*volScale):Math.round(wKm*(phase==='build'?.38:.32)*volScale);
+      return Math.max(minLong, scaledKm);
+    })(),st:[{l:sl.firstHalf,r:'',rng:rng(1.33,1.42),k:false},{l:sl.secondHalf,r:'',rng:rng(1.29,1.38),k:true},...(phase==='build'?[{l:lang==='da'?'Afsluttende 2–3 km':'Final 1.2–1.9 mi',r:'',rng:rng(1.08,1.12),k:true}]:[]),]},
+    tempo:{t:blokStr(tv.title),s:tv.note||sd.tempo.s,dr:tv.zone||defaultZones.tempo,km:Math.max(9,Math.round(wKm*.22*volScale)),st:[{l:sl.warm,r:kmToUnit(W)+' '+du,rng:rng(1.22,1.32),k:false},{l:sl.tempo,r:blokStr(tv.blok),rng:tv.zone,k:true},{l:sl.cool,r:kmToUnit(C)+' '+du,rng:rng(1.25,1.35),k:false}]},
+    int:{t:blokStr(iv.title),s:iv.note||sd.int.s,dr:iv.zone||defaultZones.int,km:Math.max(6,Math.round(wKm*.13*volScale)),st:[{l:sl.warm,r:kmToUnit(W)+' '+du,rng:rng(1.22,1.32),k:false},{l:sl.intervals,r:blokStr(iv.blok),rng:iv.zone,k:true},{l:sl.cool,r:kmToUnit(C)+' '+du,rng:rng(1.25,1.35),k:false}]},
+    vo2:{t:blokStr(vv.title||sd.vo2.t),s:vv.note||sd.vo2.s,dr:vv.zone||defaultZones.vo2,km:Math.max(5,Math.round(wKm*.11*volScale)),st:[{l:sl.warm,r:kmToUnit(W)+' '+du,rng:rng(1.22,1.32),k:false},{l:sl.drag,r:blokStr(vv.blok||(phase==='build'?'8':'6')+' × 400 m'),rng:vv.zone||qrng(0.83),k:true},{l:sl.cool,r:kmToUnit(C)+' '+du,rng:rng(1.25,1.35),k:false}]},
+    race:{t:blokStr(rv.title||sd.race.t),s:rv.s||sd.race.s,dr:rv.zone||qrng(1.00),km:Math.max(7,Math.round(wKm*.15*volScale)),st:[{l:sl.warm,r:kmToUnit(W)+' '+du,rng:rng(1.22,1.32),k:false},{l:sl.raceBlok,r:blokStr(rv.blok||kmToUnit(parseFloat(rb))+' '+du),rng:rv.zone||qrng(1.00),k:true},{l:sl.cool,r:kmToUnit(C)+' '+du,rng:rng(1.25,1.35),k:false}]},
+
+  };
+  return D[id]||D['easy'];
+}
+function pill(lo,hi,col,key){
+  const bg=key?col+'15':'#F5F5F4',tc=key?col:'#666662',bc=key?col+'44':'#E0E0DC';
+  const unit=lang==='en'?' min/mi':' min/km';
+  return`<span class="pp" style="background:${bg};color:${tc};border-color:${bc}">${dp(lo)} – ${dp(hi)}${key?unit:''}</span>`;
+}
+
+// ── MATCH ─────────────────────────────────────────────────────────────────
+function calcMatch(raw,hmRef,wKm,phase,weeks){
+  const req=REQS[curDist](raw);
+  const t=tr();
+  // Collect all run days and their sessions
+  const runDayIdxs=dayTypes.map((t,i)=>t==='run'?i:-1).filter(i=>i>=0);
+  const allSessIds=runDayIdxs.map(i=>daySessions[i]||'easy');
+  const hard=['int','vo2','tempo','race'];
+  const hasLong=allSessIds.some(s=>s==='long');
+  const hc=allSessIds.filter(s=>hard.includes(s)).length;
+  const tot=runDayIdxs.length;
+  const hasEasy=allSessIds.some(s=>s==='easy'||s==='rest_run');
+  const isTaper=phase==='taper'||phase==='race';
+  const minH=isTaper?1:req.minH;
+  // Check consecutive hard days
+  const sortedRun=[...runDayIdxs].sort((a,b)=>a-b);
+  const noC=!sortedRun.some((di,idx,arr)=>
+    idx>0&&arr[idx-1]===di-1&&hard.includes(daySessions[arr[idx-1]]||'easy')&&hard.includes(daySessions[di]||'easy')
+  );
+  // Volume check
+  const plannedKm=runDayIdxs.reduce((sum,i)=>{
+    const base=bSess(daySessions[i]||'easy',hmRef,wKm,phase,weeks,runDayIdxs.length,getWN(new Date()),i).km;
+    return sum+(dayKmOverride[i]!=null?dayKmOverride[i]:base);
+  },0);
+  const volLow=Math.round(wKm*0.90),volHigh=Math.round(wKm*1.10);
+  const volOk=plannedKm>=volLow&&plannedKm<=volHigh;
+  const cl=t.checkLabels,cp=t.checkPass,cf=t.checkFail,ch=t.checkHints;
+  const checks=[
+    {ok:hasLong,lbl:cl.long,pass:cp.long,fail:cf.long,hint:ch.long,w:20},
+    {ok:hc>=minH,lbl:cl.quality,pass:`${hc} ${lang==='da'?'hård'+(hc!==1?'e':'')+' pas':hc+(hc!==1?' hard':' hard')+' session'+(hc!==1?'s':'')}`,fail:lang==='da'?`Kun ${hc} hård${hc!==1?'e':''} pas (min. ${minH})`:`Only ${hc} hard session${hc!==1?'s':''} (min. ${minH})`,hint:lang==='da'?'Tilføj tempo, intervaller eller race-pace':'Add tempo, intervals or race pace',w:20},
+    {ok:tot>=req.minS,lbl:cl.days,pass:lang==='da'?`${tot} løbedage`:`${tot} run day${tot!==1?'s':''}`,fail:lang==='da'?`${tot} løbedage (min. ${req.minS})`:`${tot} run day${tot!==1?'s':''} (min. ${req.minS})`,hint:lang==='da'?`Tilføj ${req.minS-tot} løbedag${req.minS-tot!==1?'e':''}`:`Add ${req.minS-tot} run day${req.minS-tot!==1?'s':''}`,w:15},
+    {ok:hasEasy,lbl:cl.easy,pass:cp.easy,fail:cf.easy,hint:ch.easy,w:15},
+    {ok:noC,lbl:cl.spread,pass:cp.spread,fail:cf.spread,hint:ch.spread,w:10},
+    {ok:volOk,lbl:cl.vol,pass:`~${plannedKm} km (${lang==='da'?'mål':'target'}: ${wKm} km)`,fail:plannedKm<volLow?lang==='da'?`Kun ~${plannedKm} km (mål: ${wKm} km)`:`Only ~${plannedKm} km (target: ${wKm} km)`:lang==='da'?`~${plannedKm} km — lidt meget (mål: ${wKm} km)`:`~${plannedKm} km — slightly much (target: ${wKm} km)`,hint:plannedKm<volLow?(lang==='da'?'Tilføj en løbedag eller forlæng et pas':'Add a run day or extend a session'):(lang==='da'?'Fjern et pas eller reducer en langtur':'Remove a session or shorten the long run'),w:20},
+  ];
+  return{score:checks.reduce((s,c)=>s+(c.ok?c.w:0),0),checks};
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function render(){
+  const t=tr();
+  const color=DISTS[curDist].color;
+  document.querySelectorAll('.dt').forEach(b=>{
+    if(b.dataset.d===curDist){b.style.background=color+'18';b.style.borderColor=color+'88';b.style.color=color}
+    else{b.style.background='';b.style.borderColor='';b.style.color=''}
+  });
+  const{raw,hmRef}=gRef();
+  const weeks=wOut(),d=DISTS[curDist];
+  const phase=calcPhase(weeks);
+  const phLbl=t.phases[phase]||phase;
+  const req=REQS[curDist](raw),pkKm=req.pk,wKm=calcWeekKm(pkKm,weeks);
+  const tw=taperWeeks();
+  const totalBuild={'5k':8,'10k':10,'hm':14,'m':18}[curDist];
+  const buildWeeks=weeks-tw;
+  const weekInPlan=Math.max(1,totalBuild-buildWeeks+1);
+  const isCutback=phase==='base'&&(weekInPlan%4===0);
+  const kmNote=phase==='taper'?`↓ Taper (${tw-(weeks-1)} / ${tw})`:isCutback?(lang==='da'?'Cut-back uge':'Cut-back week'):t.statsSubs.anbefalet;
+  const phaseNote=phase==='taper'?`Taper ${tw-(weeks-1)}/${tw}`:isCutback?(lang==='da'?'Cut-back':'Cut-back'):'';
+  document.getElementById('atrMeta').textContent=(Array.isArray(d.label)?d.label[lang==='en'?1:0]:d.label)+' · '+fmtH(raw*d.km);
+  const rl=t.recStatLabels,rs=t.recStatSubs;
+  document.getElementById('recG').innerHTML=[{l:rl[0],v:req.s+'+',s:rs[0]},{l:rl[1],v:kmToUnit(pkKm)+' '+distUnit(),s:rs[1]},{l:rl[2],v:req.dur,s:rs[2]}].map(x=>`<div class="rg"><div class="rg-l">${x.l}</div><div class="rg-v" style="color:${color}">${x.v}</div><div class="rg-s">${x.s}</div></div>`).join('');
+  // Build dynamic pace-aware rec rows — compute ranges inline using hmRef
+  const _fg=Math.min(0.05,Math.max(0.003,weeks*0.003125));
+  const _qr=(f)=>({lo:Math.round(hmRef*f),hi:Math.round(hmRef*f*(1+_fg))});
+  const _rng=(a,b)=>({lo:Math.round(hmRef*a),hi:Math.round(hmRef*b)});
+  const recPaces={
+    easy: _rng(1.29,1.42),
+    long: _rng(1.29,1.42),
+    tempo:_qr(1.04),
+    race: _qr(1.00),
+    mar:  _qr(1.06),
+    int:  _qr(0.93),
+    vo2:  _qr(0.87),
+  };
+  function fmtPaceRange(lo,hi){return dp(lo)+'–'+dp(hi)+' min/'+(lang==='en'?'mi':'km');}
+  const distPaceType={'5k':'vo2','10k':'int','hm':'race','m':'mar'};
+  const racePaceZone=recPaces[distPaceType[curDist]];
+  
+  const recRowData=[
+    {n:['Langtur','Long run'],          pace:recPaces.long,  c:'#1A9E68'},
+    {n:[curDist==='hm'?'HM-pace-løb':curDist==='m'?'Maratonpace-løb':curDist==='10k'?'Race-pace-løb':'Race-pace-løb',
+        curDist==='hm'?'HM pace run':curDist==='m'?'M-pace run':'Race pace run'],
+                                        pace:racePaceZone,   c:color},
+    {n:['Tempoløb','Tempo run'],        pace:recPaces.tempo, c:'#B8860B'},
+    {n:['Let løb','Easy run'],          pace:recPaces.easy,  c:'#888884'},
+    {n:['Styrketræning','Strength'],    pace:null,           c:'#6B3FA0'},
+    {n:['Alternativ træning','Alt. training'], pace:null,    c:'#2E6EBF'},
+  ];
+  const rec5=REC[curDist];
+  document.getElementById('rsRows').innerHTML=recRowData.map((row,idx)=>{
+    const nm=Array.isArray(row.n)?row.n[lang==='en'?1:0]:row.n;
+    const staticRow=rec5[idx];
+    const freq=staticRow?Array.isArray(staticRow.f)?staticRow.f[lang==='en'?1:0]:staticRow.f:'';
+    const paceStr=row.pace?fmtPaceRange(row.pace.lo,row.pace.hi):'';
+    return`<div class="sr-row"><div class="sd" style="background:${row.c}"></div><span class="sn">${nm}</span><span class="sd2 pace-hint">${paceStr}</span><span class="sf">${freq}</span></div>`;
+  }).join('');
+  // Run/alt day counts
+  const runIdxs=dayTypes.map((t,i)=>t==='run'?i:-1).filter(i=>i>=0);
+  const altIdxs=dayTypes.map((t,i)=>(t==='cardio'||t==='strength')?i:-1).filter(i=>i>=0);
+  // Match
+  const{score,checks}=calcMatch(raw,hmRef,wKm,phase,weeks);
+  let barC,bTxt,bBg,bTc,bBd;
+  if(score>=90){barC='#1A9E68';bTxt=t.matchGood;bBg='#EBF8F2';bTc='#1A9E68';bBd='#A8DECA'}
+  else if(score>=65){barC='#B8860B';bTxt=t.matchClose;bBg='#FDF6E3';bTc='#B8860B';bBd='#E8D08A'}
+  else{barC='#CC3333';bTxt=t.matchAdjust;bBg='#FDF0F0';bTc='#CC3333';bBd='#F0B8B8'}
+  const mr=document.getElementById('miniRing');mr.style.borderColor=barC;mr.style.color=barC;
+  document.getElementById('miniPct').textContent=score+'%';
+  const mb=document.getElementById('mbadge');mb.textContent=bTxt;mb.style.background=bBg;mb.style.color=bTc;mb.style.border='1px solid '+bBd;
+  document.getElementById('mbar').style.cssText=`width:${score}%;background:${barC}`;
+  const matchNote=tr().matchNote||'Alt. training and strength are not included in the score.';
+  document.getElementById('checks').innerHTML=checks.map(c=>`<div class="cr ${c.ok?'ok':'fail'}"><span class="ci">${c.ok?'✅':'❌'}</span><div class="cb"><div class="cm"><b>${c.lbl}</b> — ${c.ok?c.pass:c.fail}</div>${!c.ok?`<div class="ch">→ ${c.hint}</div>`:''}</div><span class="cw">${c.w}p</span></div>`).join('')+`<div style="font-size:11px;color:var(--muted);padding:6px 8px;margin-top:4px">ℹ️ ${matchNote}</div>`;
+  // Plan header
+  const now=new Date();
+  document.getElementById('ph').textContent=(tr().weekLabel||'Week')+' '+getWN(now)+' · '+now.toLocaleDateString(lang==='da'?'da-DK':'en-GB',{day:'numeric',month:'long'});
+  document.getElementById('phSub').textContent=(Array.isArray(d.label)?d.label[lang==='en'?1:0]:d.label)+' · '+weeks+' '+t.statsSubs.race+' · '+phLbl+(phaseNote?' · '+phaseNote:'');
+
+  // Warnings
+  const hard=['int','vo2','tempo','race'],warns=[];
+  if(phase==='taper'){const pct=Math.round((1-(wKm/pkKm))*100);warns.unshift({cls:'w-blue',icon:'ℹ️',msg:t.taperNote(weeks,tw,pct)})}
+  if(isCutback) warns.unshift({cls:'w-blue',icon:'ℹ️',msg:t.cutbackNote});
+  const sortedRun=[...runIdxs].sort((a,b)=>a-b);
+  sortedRun.forEach((di,idx,arr)=>{
+    if(idx>0&&arr[idx-1]===di-1&&hard.includes(daySessions[arr[idx-1]]||'easy')&&hard.includes(daySessions[di]||'easy'))
+      warns.push({cls:'w-yellow',icon:'⚠️',msg:t.consecWarn(t.dayNamesFull[arr[idx-1]],t.dayNamesFull[di])});
+  });
+  document.getElementById('warnBox').innerHTML=warns.map(w=>`<div class="warn ${w.cls}">${w.icon} ${w.msg}</div>`).join('');
+  // Plan rows
+  let totalKm=0;
+  const todayPlanIdx=(new Date().getDay()+6)%7;
+  document.getElementById('planRows').innerHTML=t.dayNamesFull.map((dayName,i)=>{
+    const isToday=i===todayPlanIdx;
+    const tp=dayTypes[i];
+    if(tp==='rest')return`<div class="pc rest${isToday?' pc-today':''}"><div class="pch"><span class="pcd">${isToday?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-right:5px;vertical-align:1px"></span>':''}${dayName}</span><span style="font-size:12px;color:#AAAAAA">${t.restNote}</span></div></div>`;
+    if(tp==='cardio')return`<div class="pc alt${isToday?' pc-today':''}"><div class="pch"><span class="pcd">${isToday?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-right:5px;vertical-align:1px"></span>':''}${dayName}</span><span style="font-size:12px;color:#2E6EBF;font-style:italic">${t.cardioNote}</span></div></div>`;
+    if(tp==='strength')return`<div class="pc str${isToday?' pc-today':''}"><div class="pch"><span class="pcd">${isToday?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-right:5px;vertical-align:1px"></span>':''}${dayName}</span><span style="font-size:12px;color:#6B3FA0;font-style:italic">${t.strengthNote}</span></div></div>`;
+    const sess=bSess(daySessions[i]||'easy',hmRef,wKm,phase,weeks,runIdxs.length,getWN(new Date()),i);
+    const defaultKm=sess.km;
+    const overrideKm=dayKmOverride[i]!=null?dayKmOverride[i]:null;
+    const actualKm=overrideKm!=null?overrideKm:defaultKm;
+    const displayKmUnit=kmToUnit(actualKm);
+    const defaultDisp=kmToUnit(defaultKm);
+    const isOverridden=overrideKm!=null;
+    totalKm+=actualKm;
+    const stH=sess.st.length>1?`<div class="steps">${sess.st.map(s=>`<div class="step${s.k?' key':''}"><div style="display:flex;align-items:center;gap:6px"><span class="sl">${s.l}</span>${s.r?`<span class="sr2">· ${s.r}</span>`:''}</div>${pill(s.rng.lo,s.rng.hi,color,s.k)}</div>`).join('')}</div>`:'';
+    return`<div class="pc run${isToday?' pc-today':''}"><div class="pch"><span class="pcd">${isToday?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-right:5px;vertical-align:1px"></span>':''}${dayName}</span><div><div class="pct">${sess.t}</div><div class="pcs">${sess.s}</div></div><div class="pcr"><div class="pcp" style="color:${color}"><span class="pace-lbl">${['easy','long'].includes(daySessions[i]||'easy')?'Zone 2':lang==='da'?'Pace fokus':'Pace focus'}</span>${dp(sess.dr.lo)}–${dp(sess.dr.hi)}</div><div class="pck">${isOverridden?'':'\~'}${displayKmUnit} ${distUnit()}${isOverridden?' <span style=\"color:var(--orange);font-size:9px\">✎</span>':''}</div></div></div>${stH?`<div style="background:var(--surface);border-top:1px solid var(--border)">${stH}</div>`:''}</div>`;
+  }).join('');
+    document.getElementById('fn').innerHTML=`<span class="fn-label">${t.totalLabel}</span><strong>~${kmToUnit(totalKm)} ${distUnit()}</strong>`;
+  const gridTotalEl=document.getElementById('gridTotal');
+  if(gridTotalEl) gridTotalEl.textContent='~'+kmToUnit(totalKm)+' '+distUnit();
+
+  renderMini(weeks,pkKm,wKm,totalKm,phase,color,t);
+}
+
+function renderMini(weeks,pkKm,wKm,totalKm,phase,color,t){
+  const el=document.getElementById('weekMini');
+  if(!el) return;
+
+  const tw=taperWeeks();
+  const totalBuild={'5k':8,'10k':10,'hm':14,'m':18}[curDist];
+  const totalPlan=totalBuild+tw;
+  const phLbl=t.phases[phase]||phase;
+  const progressLabel=weeks<=0?(lang==='da'?'Race-uge 🏁':'Race week 🏁'):lang==='da'?`${weeks} uger til race`:`${weeks} weeks to race`;
+
+  // Early start: weeks to race exceeds typical plan length
+  const tooEarly=weeks>totalPlan;
+  const earlyMsg=lang==='da'
+    ?`Du starter ${weeks-totalPlan} uge${weeks-totalPlan!==1?'r':''} før en typisk opbygning. Planen viser de ${totalPlan} uger op til race.`
+    :`You're starting ${weeks-totalPlan} week${weeks-totalPlan!==1?'s':''} before a typical build-up. The chart shows the ${totalPlan} weeks to race.`;
+
+  // Week bars
+  const maxBarH=36;
+  const showWeeks=Math.min(totalPlan,24);
+  const startOffset=Math.max(0,totalPlan-showWeeks);
+  let bars='';
+  for(let i=0;i<showWeeks;i++){
+    const wkNum=startOffset+i;
+    const weeksToRace=totalPlan-wkNum;
+    const isCurrent=weeksToRace===weeks;
+    const isTaperW=weeksToRace<=tw;
+    const isPast=weeksToRace>weeks;
+    const wkKm=calcWeekKm(pkKm,weeksToRace);
+    const wkPhase=calcPhase(weeksToRace);
+    const wkPhaseLbl=t.phases[wkPhase]||wkPhase;
+    const barH=Math.max(4,Math.round((wkKm/pkKm)*maxBarH));
+    const bg=isPast?'var(--border2)':isTaperW?color+'55':color+(isCurrent?'':'88');
+    const op=isPast?0.45:1;
+    const kmDisp=kmToUnit(wkKm)+' '+distUnit();
+    const weekNum=totalPlan-showWeeks+i+1;
+    const tooltipDA=`Uge ${weekNum} · ${kmDisp} · ${wkPhaseLbl}`;
+    const tooltipEN=`Week ${weekNum} · ${kmDisp} · ${wkPhaseLbl}`;
+    const tooltip=lang==='da'?tooltipDA:tooltipEN;
+    bars+=`<div class="wm-bar-col" 
+      onmouseenter="showWeekTip(this,'${tooltip.replace(/'/g,'&#39;')}')" 
+      onmouseleave="hideWeekTip()"
+      onclick="showWeekTip(this,'${tooltip.replace(/'/g,'&#39;')}',true)">
+      <div class="wm-bar-seg${isCurrent?' wm-current':''}" style="height:${barH}px;background:${bg};opacity:${op}"></div>
+    </div>`;
+  }
+
+  // Volume line
+  const volPct=pkKm>0?Math.round((wKm/pkKm)*100):0;
+  const volLabel=lang==='da'?`Anbefalet ${kmToUnit(wKm)} ${distUnit()} — ${volPct}% af peak`:
+    `Recommended ${kmToUnit(wKm)} ${distUnit()} — ${volPct}% of peak`;
+
+  el.innerHTML=`
+    <div class="wm-header">
+      <span class="wm-label">${lang==='da'?'Ugeoverblik':'Week overview'}</span>
+      <span class="wm-val">${progressLabel} · <span style="color:${color}">${phLbl}</span></span>
+    </div>
+    ${tooEarly?`<div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:.5rem;padding:5px 8px;background:var(--surface);border-radius:6px;border:1px solid var(--border)">${earlyMsg}</div>`:''}
+    <div style="position:relative;margin-top:.5rem">
+      <div class="wm-weeks-row">${bars}</div>
+      <div class="wm-tip" id="wmTip" style="display:none"></div>
+    </div>
+    <div class="wm-footer">
+      <span class="wm-label">${lang==='da'?'Denne uge':'This week'}</span>
+      <span class="wm-val">${volLabel}</span>
+    </div>
+  `;
+}
+
+function showWeekTip(el,txt,sticky){
+  const tip=document.getElementById('wmTip');
+  if(!tip) return;
+  tip.textContent=txt;
+  tip.style.display='block';
+  // Position below the bar column
+  const wrap=el.closest('.wm-weeks-row');
+  const wrapRect=wrap?wrap.getBoundingClientRect():{left:0,width:0};
+  const elRect=el.getBoundingClientRect();
+  const relLeft=elRect.left-wrapRect.left;
+  const pct=relLeft/wrapRect.width*100;
+  tip.style.left=Math.min(Math.max(0,pct-10),60)+'%';
+  if(sticky) setTimeout(()=>tip.style.display='none',2000);
+}
+function hideWeekTip(){
+  const tip=document.getElementById('wmTip');
+  if(tip) tip.style.display='none';
+}
+
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+
+function downloadICS(){
+  const now=new Date();
+  // Find the Monday of the current week
+  const dayOfWeek=now.getDay(); // 0=Sun,1=Mon,...6=Sat
+  const monday=new Date(now);
+  monday.setDate(now.getDate() - ((dayOfWeek+6)%7)); // go to Monday
+  monday.setHours(7,0,0,0); // default 07:00
+
+  const {raw,hmRef}=gRef();
+  const weeks=wOut();
+  const phase=calcPhase(weeks);
+  const req=REQS[curDist](raw);
+  const pkKm=req.pk;
+  const wKm=calcWeekKm(pkKm,weeks);
+  const runIdxs=dayTypes.map((t,i)=>t==='run'?i:-1).filter(i=>i>=0);
+  const wn=getWN(now);
+  const t=tr();
+
+  function fmt(d){
+    // Format as YYYYMMDDTHHMMSS
+    const pad=n=>String(n).padStart(2,'0');
+    return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
+  }
+  function fmtDate(d){
+    const pad=n=>String(n).padStart(2,'0');
+    return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+  }
+
+  function icsEscape(str){
+    return (str||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+  }
+
+  function wrapLine(line){
+    // ICS requires lines ≤75 octets, fold longer lines
+    const out=[];
+    while(line.length>75){out.push(line.slice(0,75));line=' '+line.slice(75);}
+    out.push(line);
+    return out.join('\r\n');
+  }
+
+  const events=[];
+  const stamp=fmt(now)+'Z';
+
+  dayTypes.forEach((tp,i)=>{
+    const day=new Date(monday);
+    day.setDate(monday.getDate()+i);
+
+    if(tp==='rest') return; // skip rest days
+
+    if(tp==='cardio'||tp==='strength'){
+      const title=t.typeLabels[tp];
+      const desc=tp==='cardio'?t.cardioNote:t.strengthNote;
+      const dtstart=fmtDate(day);
+      const dtend=fmtDate(day);
+      const uid='ugeplanner-'+fmtDate(day)+'-'+tp+'@adapt.dk';
+      events.push(
+        'BEGIN:VEVENT\r\n'+
+        wrapLine('UID:'+uid)+'\r\n'+
+        'DTSTAMP:'+stamp+'\r\n'+
+        'DTSTART;VALUE=DATE:'+dtstart+'\r\n'+
+        'DTEND;VALUE=DATE:'+dtend+'\r\n'+
+        wrapLine('SUMMARY:'+icsEscape(title))+'\r\n'+
+        wrapLine('DESCRIPTION:'+icsEscape(desc))+'\r\n'+
+        'END:VEVENT'
+      );
+      return;
+    }
+
+    if(tp==='run'){
+      const sess=bSess(daySessions[i]||'easy',hmRef,wKm,phase,weeks,runIdxs.length,wn);
+      const overrideKm=dayKmOverride[i]!=null?dayKmOverride[i]:null;
+      const km=overrideKm!=null?overrideKm:sess.km;
+      const kmDisp=kmToUnit(km)+' '+distUnit();
+
+      // Title: session name + distance
+      const title=sess.t+' – '+kmDisp;
+
+      // Description: subtitle + steps
+      let desc=sess.s+'\n\n';
+      desc+=(lang==='da'?'Pace: ':'Pace: ')+dp(sess.dr.lo)+'–'+dp(sess.dr.hi)+' min/'+(lang==='en'?'mi':'km')+'\n';
+      if(sess.st.length>1){
+        desc+='\n'+(lang==='da'?'Opbygning:':'Structure:')+'\n';
+        sess.st.forEach(step=>{
+          const stepPace=dp(step.rng.lo)+'–'+dp(step.rng.hi);
+          const dist2=step.r?step.r+' ':'';
+          desc+=step.l+(dist2?': '+dist2:'')+'('+stepPace+' min/'+(lang==='en'?'mi':'km')+')\n';
+        });
+      }
+      desc+='\n'+(lang==='da'?'Lavet af Ask Hybel · Adapt / NBRO Running':'By Ask Hybel · Adapt / NBRO Running');
+
+      // Set time: run sessions get a time slot (07:00 → estimated end)
+      const durationMin=Math.round(km*(lang==='en'?1.609:1)*sess.dr.lo/60)+15; // approx
+      const startH=7;
+      const start=new Date(day); start.setHours(startH,0,0,0);
+      const end=new Date(start); end.setMinutes(start.getMinutes()+durationMin);
+
+      const uid='ugeplanner-'+fmt(start)+'-run@adapt.dk';
+      events.push(
+        'BEGIN:VEVENT\r\n'+
+        wrapLine('UID:'+uid)+'\r\n'+
+        'DTSTAMP:'+stamp+'\r\n'+
+        'DTSTART:'+fmt(start)+'\r\n'+
+        'DTEND:'+fmt(end)+'\r\n'+
+        wrapLine('SUMMARY:'+icsEscape(title))+'\r\n'+
+        wrapLine('DESCRIPTION:'+icsEscape(desc))+'\r\n'+
+        'END:VEVENT'
+      );
+    }
+  });
+
+  const ics=[
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Adapt & NBRO Running//Ugeplanlægger//'+lang.toUpperCase(),
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'X-WR-CALNAME:'+(lang==='da'?'Træningsuge '+wn:'Training week '+wn),
+    ...events,
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=(lang==='da'?'traeningsuge-':'training-week-')+wn+'.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function setDD(){const dt=new Date();dt.setDate(dt.getDate()+102);document.getElementById('raceDate').value=dt.toISOString().slice(0,10)}
+document.getElementById('raceDate').addEventListener('input',render);
+setDD();
+// Init how content
+document.getElementById('howContent').innerHTML=T['da'].howContent.map(x=>`<div style="padding:10px 14px;background:#F8F8F7;border-radius:8px;border:1px solid #E8E8E4">${x}</div>`).join('');
+// Compute optimal week for default dist before first render
+distDefaults(curDist);
+rGrid();render();onTimeChange();
+</script>
+</body>
+</html>
